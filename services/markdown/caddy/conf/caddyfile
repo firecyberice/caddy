@@ -1,0 +1,17 @@
+:2015
+tls off
+
+root /markdown/
+ext .md .markdown .mdown
+log / /root/.caddy/logs/md.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
+
+markdown / {
+  template templates/default.html
+  template sitemap templates/sitemap.html
+
+  # enables static site generation. Static (HTML) files will be dumped to static_path.
+  sitegen
+  # disables caching of the Markdown index.
+  # This is useful for local development when you want immediate updates to pages.
+  dev
+}

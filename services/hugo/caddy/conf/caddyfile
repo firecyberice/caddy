@@ -1,0 +1,9 @@
+:2015
+tls off
+
+log / /root/.caddy/logs/hugo.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
+# the folder where Hugo generates the website
+root /hugo/public/
+hugo /hugo
+# protect the admin area using HTTP basic auth
+basicauth /admin user pass

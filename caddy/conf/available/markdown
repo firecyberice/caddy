@@ -1,0 +1,5 @@
+markdown.domain.tld:80 {
+  tls off
+  log / /root/.caddy/logs/markdown.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
+  proxy / http://markdown:2015/
+}

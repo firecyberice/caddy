@@ -1,0 +1,19 @@
+version: "2"
+networks:
+  backend:
+    external:
+      name: caddy_backend
+
+services:
+  hugo:
+    build:
+      context: ./caddy/
+    command: -http2=false -conf /root/.caddy/conf/caddyfile
+    restart: always
+    #    read_only: true
+    user: root
+    networks:
+      - backend
+    volumes:
+      - ./caddy/:/root/.caddy:rw
+      - ./content/:/hugo/

@@ -1,0 +1,19 @@
+version: "2"
+networks:
+  backend:
+    external:
+      name: caddy_backend
+
+
+services:
+  landingpage:
+    image: busybox
+    command: ["httpd","-f","-p","80","-h","/www"]
+    restart: always
+    read_only: true
+    expose:
+      - 80
+    networks:
+      - backend
+    volumes:
+      - ./www/:/www/

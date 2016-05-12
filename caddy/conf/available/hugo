@@ -1,0 +1,5 @@
+hugo.domain.tld:80 {
+  tls off
+  log / /root/.caddy/logs/hugo.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
+  proxy / http://hugo:2015/
+}

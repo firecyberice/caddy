@@ -1,0 +1,4 @@
+start.domain.tld {
+  log / /root/.caddy/logs/default.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
+  proxy / http://landingpage:80
+}

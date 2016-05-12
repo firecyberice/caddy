@@ -1,0 +1,160 @@
+#!/bin/bash
+
+CADDY_DIR="caddy/conf"
+SERVICES_DIR="services"
+STARTPAGE_DIR="services/landingpage/www"
+
+
+## functions
+
+function start(){
+  docker network create --driver=bridge caddy_backend
+
+  echo "create and start landingpage and frontend proxy"
+  docker-compose up -d
+}
+
+function stop(){
+  echo "stop and remove landingpage and frontend proxy"
+  docker-compose down --volumes --rmi local
+
+  docker network rm caddy_backend
+}
+
+function cleanup(){
+  echo "remove dangling images"
+  docker rmi $(docker images --quiet --filter dangling=true)
+
+  echo "remove dangling volumes"
+  docker volume rm $(docker volume ls --quiet --filter dangling=true)
+}
+
+
+function makeindex(){
+  local newjson=""
+  for i in $(ls -1 ${CADDY_DIR}/enabled/); do
+    if [[ -z ${newjson} ]]; then
+      newjson="["
+    else
+      newjson=${newjson}","
+    fi
+    local link=$(head -n 1 ${CADDY_DIR}/enabled/$i | cut -d' ' -f1)
+    local example="{\"name\": \"$i\",\"link\": \"http://$link\",\"button\": \"btn-primary\",\"image\": \"empty\"}"
+    newjson=${newjson}${example}
+  done
+  newjson=${newjson}"]"
+
+  echo ${newjson} | jq '.' > "${STARTPAGE_DIR}/caddy.json"
+  echo -e "Index created\nPlease open \e[34m'/caddy.html'\e[39m in your browser."
+}
+
+function buildme(){
+  docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" build
+}
+
+function enableme(){
+  ln -sr "${CADDY_DIR}/available/${SERVICE}" "${CADDY_DIR}/enabled/"
+  docker-compose restart caddy
+  docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" up -d
+}
+
+function disableme(){
+  rm -f "${CADDY_DIR}/enabled/${SERVICE}"
+  docker-compose restart caddy
+  docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v
+}
+
+function listme(){
+  echo -e "\n\e[34mdocker apps\e[39m"
+  ls -1 "${SERVICES_DIR}/"
+
+  echo -e "\n\e[34mavailable\e[39m"
+  ls -1 "${CADDY_DIR}/available/"
+
+  echo -e "\n\e[34menabled\e[39m"
+  ls -1 "${CADDY_DIR}/enabled/"
+  echo -e "\n\n"
+}
+
+function sethome(){
+  grep -rn "domain.tld" "${CADDY_DIR}"
+  if [[ -n "${SERVICE}" ]]; then
+    find "${CADDY_DIR}" -type f -exec sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" {} \;
+  fi
+}
+
+function usage () {
+cat << EOM
+usage:
+
+  caddyctl start              Start the Caddy server.
+
+  caddyctl stop               Stop the Caddy server.
+
+  caddyctl list               List all Services (Docker Applications).
+
+  caddyctl enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
+
+  caddyctl disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
+
+  caddyctl build <service>    Build Docker Image of a service. (run docker-compose build)
+
+  caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
+
+  caddyctl index              Create index page for active Services available at '/caddy.html'.
+
+  caddyctl cleanup            Remove all dangling Docker resources.
+
+EOM
+}
+
+
+if [ $# -eq 1 ]; then
+SERVICE="${2}"
+  case "$1" in
+    "start" )
+      start
+      ;;
+    "stop" )
+      stop
+      ;;
+    "cleanup" )
+      cleanup
+      ;;
+    "list" )
+      listme
+      ;;
+    "index" )
+      makeindex
+      ;;
+    * )
+      usage
+      ;;
+  esac
+elif [ $# -eq 2 ]; then
+SERVICE="${2}"
+#if [[ "${SERVICE}" != "landingpage" ]]; then
+  case "$1" in
+    "enable" )
+      enableme
+      ;;
+    "disable" )
+      disableme
+      ;;
+    "build" )
+      buildme
+      ;;
+    "sethome" )
+      sethome
+      ;;
+    * )
+      usage
+      ;;
+  esac
+#fi
+elif [[ $DEBUG == "true" ]]; then
+#  eval "$@"
+  exec "$@"
+else
+  usage
+fi
