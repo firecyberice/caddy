@@ -50,6 +50,7 @@ function makeindex(){
 
 function buildme(){
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" build
+  docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" pull
 }
 
 function enableme(){
@@ -97,7 +98,7 @@ usage:
 
   caddyctl disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
 
-  caddyctl build <service>    Build Docker Image of a service. (run docker-compose build)
+  caddyctl prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
 
   caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
 
@@ -141,7 +142,7 @@ SERVICE="${2}"
     "disable" )
       disableme
       ;;
-    "build" )
+    "prepare" )
       buildme
       ;;
     "sethome" )
