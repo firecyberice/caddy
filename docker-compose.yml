@@ -10,6 +10,7 @@ services:
     build:
       context: caddy/
       dockerfile: Dockerfile
+    image: firecyberice/caddy:dirty
     command: -http2=false -conf /root/.caddy/conf/caddyfile
     restart: always
     #    read_only: true
