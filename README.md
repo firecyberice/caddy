@@ -8,6 +8,11 @@
  - services folder
  - docker-compose main container
 
+#### Dependencies
+ - docker >= 1.10.0
+ - docker-compose >= 1.7.0
+ - jq
+ 
 
 #### 1. create caddy vhost config in `caddy/conf/available/` like
 
