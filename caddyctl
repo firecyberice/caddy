@@ -148,7 +148,11 @@ EOM
 }
 
 
-if [ $# -eq 1 ]; then
+if [[ $DEBUG == "true" ]]; then
+  echo "$@"
+  eval "$@"
+#  exec "$@"
+elif [ $# -eq 1 ]; then
 SERVICE="${2}"
   case "$1" in
     "start" )
@@ -206,9 +210,6 @@ SERVICE="${2}"
       ;;
   esac
 #fi
-elif [[ $DEBUG == "true" ]]; then
-#  eval "$@"
-  exec "$@"
 else
   usage
 fi
