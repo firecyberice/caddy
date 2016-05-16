@@ -68,6 +68,10 @@ function logme(){
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" logs -f
 }
 
+function caddylog(){
+  docker-compose logs -f
+}
+
 function enableme(){
   ln -sr "${CADDY_DIR}/available/${SERVICE}" "${CADDY_DIR}/enabled/"
   docker-compose restart caddy
@@ -120,6 +124,8 @@ usage:
 
   caddyctl reload             Reload the Caddy server config (restart caddy container).
 
+  caddyctl caddylog           Log from the Caddy server.
+
   caddyctl ps                 Get status of all connected Container.
 
   caddyctl list               List all Services (Docker Applications).
@@ -156,6 +162,9 @@ SERVICE="${2}"
       ;;
     "reload" )
       reload
+      ;;
+    "caddylog" )
+      caddylog
       ;;
     "cleanup" )
       cleanup
