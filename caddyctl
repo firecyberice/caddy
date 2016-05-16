@@ -43,7 +43,7 @@ function cleanup(){
 
 function makeindex(){
   local newjson=""
-  for i in $(ls -1 ${CADDY_DIR}/enabled/); do
+  for i in ${CADDY_DIR}/enabled/*; do
     if [[ -z ${newjson} ]]; then
       newjson="["
     else
