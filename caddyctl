@@ -147,6 +147,29 @@ usage:
 EOM
 }
 
+function evaluate_result(){
+  local returnvalue="${1}"
+  local message="${2}"
+  if [ "$returnvalue" -eq 0 ]; then
+    echo -e "\e[32m  [PASS] ${message}\e[0m"
+  else
+    echo -e "\e[31m  [FAIL] ${message}\e[0m"
+    ERROR=1
+  fi
+}
+
+function check_if_program_exists(){
+  cmd="${1}"
+  command -v $cmd >/dev/null 2>&1
+  evaluate_result $? "$cmd is installed"
+}
+
+ERROR=0
+check_if_program_exists jq
+
+if [[ $ERROR -gt 0 ]]; then
+  exit 1
+fi
 
 if [[ $DEBUG == "true" ]]; then
   echo "$@"
