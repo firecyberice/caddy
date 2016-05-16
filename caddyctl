@@ -40,7 +40,6 @@ function cleanup(){
   docker volume rm $(docker volume ls --quiet --filter dangling=true)
 }
 
-
 function makeindex(){
   local newjson=""
   for i in ${CADDY_DIR}/conf/enabled/*; do
@@ -70,6 +69,10 @@ function logme(){
 
 function caddylog(){
   docker-compose logs -f
+}
+
+function vhostlog(){
+  multitail "${CADDY_DIR}/logs/*"
 }
 
 function enableme(){
@@ -126,21 +129,23 @@ usage:
 
   caddyctl caddylog           Log from the Caddy server.
 
-  caddyctl ps                 Get status of all connected Container.
+  caddyctl vhostlog           Log from the Caddy server vhosts.
 
-  caddyctl list               List all Services (Docker Applications).
+  caddyctl logs <service>     Logs of a service. (run docker-compose logs -f)
 
   caddyctl enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
 
   caddyctl disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
 
-  caddyctl logs <service>     Logs of a service. (run docker-compose logs -f)
-
   caddyctl prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
 
-  caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
+  caddyctl ps                 Get status of all connected Container.
+
+  caddyctl list               List all Services (Docker Applications).
 
   caddyctl index              Create index page for active Services available at '/caddy.html'.
+
+  caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
 
   caddyctl cleanup            Remove all dangling Docker resources.
 
@@ -166,6 +171,7 @@ function check_if_program_exists(){
 
 ERROR=0
 check_if_program_exists jq
+check_if_program_exists multitail
 
 if [[ $ERROR -gt 0 ]]; then
   exit 1
@@ -194,6 +200,9 @@ SERVICE="${2}"
       ;;
     "caddylog" )
       caddylog
+      ;;
+    "vhostlog" )
+      vhostlog
       ;;
     "cleanup" )
       cleanup
