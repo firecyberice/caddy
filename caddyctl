@@ -21,6 +21,17 @@ function stop(){
   docker network rm caddy_backend
 }
 
+function restart(){
+  echo "restart frontend proxy"
+  docker-compose down -v
+  docker-compose up -d
+}
+
+function reload(){
+  echo "reload frontend proxy"
+  docker-compose restart caddy
+}
+
 function cleanup(){
   echo "remove dangling images"
   docker rmi $(docker images --quiet --filter dangling=true)
@@ -96,6 +107,10 @@ usage:
 
   caddyctl stop               Stop the Caddy server.
 
+  caddyctl restart            Restart the Caddy server. (recreate caddy container)
+
+  caddyctl reload             Reload the Caddy server config (restart caddy container).
+
   caddyctl list               List all Services (Docker Applications).
 
   caddyctl enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
@@ -124,6 +139,12 @@ SERVICE="${2}"
       ;;
     "stop" )
       stop
+      ;;
+    "restart" )
+      restart
+      ;;
+    "reload" )
+      reload
       ;;
     "cleanup" )
       cleanup
