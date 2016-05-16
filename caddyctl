@@ -42,12 +42,13 @@ function cleanup(){
 
 function makeindex(){
   local newjson=""
-  for i in ${CADDY_DIR}/conf/enabled/*; do
+  for j in ${CADDY_DIR}/conf/enabled/*; do
     if [[ -z ${newjson} ]]; then
       newjson="["
     else
       newjson=${newjson}","
     fi
+    i=$(basename $j)
     local link=$(head -n 1 ${CADDY_DIR}/conf/enabled/$i | cut -d' ' -f1)
     local example="{\"name\": \"$i\",\"link\": \"http://$link\",\"button\": \"btn-primary\",\"image\": \"empty\"}"
     newjson=${newjson}${example}
@@ -104,6 +105,7 @@ function psme(){
   cmd='docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a '
   filterlist="${CADDY_DIR}/conf/enabled/*"
   eval $cmd | head -n 1
+  eval $cmd | grep "caddy"
   for item in $filterlist; do
     eval $cmd | grep "$(basename $item)"
   done
