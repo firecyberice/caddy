@@ -53,6 +53,10 @@ function buildme(){
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" pull
 }
 
+function logme(){
+  docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" logs -f
+}
+
 function enableme(){
   ln -sr "${CADDY_DIR}/available/${SERVICE}" "${CADDY_DIR}/enabled/"
   docker-compose restart caddy
@@ -97,6 +101,8 @@ usage:
   caddyctl enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
 
   caddyctl disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
+
+  caddyctl logs <service>     Logs of a service. (run docker-compose logs -f)
 
   caddyctl prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
 
@@ -144,6 +150,9 @@ SERVICE="${2}"
       ;;
     "prepare" )
       buildme
+      ;;
+    "logs" )
+      logme
       ;;
     "sethome" )
       sethome
