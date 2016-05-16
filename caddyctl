@@ -96,7 +96,7 @@ function psme(){
   cmd='docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a '
   filterlist="$(ls "${CADDY_DIR}/enabled/")"
   for item in ${CADDY_DIR}/enabled/*; do
-    docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a | grep $item
+    docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a | grep "$(basename $item)"
   done
 }
 
