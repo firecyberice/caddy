@@ -92,6 +92,14 @@ function listme(){
   echo -e "\n\n"
 }
 
+function psme(){
+  cmd='docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a '
+  filterlist="$(ls "${CADDY_DIR}/enabled/")"
+  for item in ${CADDY_DIR}/enabled/*; do
+    docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a | grep $item
+  done
+}
+
 function sethome(){
   grep -rn "domain.tld" "${CADDY_DIR}"
   if [[ -n "${SERVICE}" ]]; then
@@ -110,6 +118,8 @@ usage:
   caddyctl restart            Restart the Caddy server. (recreate caddy container)
 
   caddyctl reload             Reload the Caddy server config (restart caddy container).
+
+  caddyctl ps                 Get status of all connected Container.
 
   caddyctl list               List all Services (Docker Applications).
 
@@ -148,6 +158,9 @@ SERVICE="${2}"
       ;;
     "cleanup" )
       cleanup
+      ;;
+    "ps" )
+      psme
       ;;
     "list" )
       listme
