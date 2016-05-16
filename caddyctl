@@ -72,7 +72,8 @@ function caddylog(){
 }
 
 function vhostlog(){
-  multitail "${CADDY_DIR}/logs/*"
+  local logdir="${CADDY_DIR}/logs/*"
+  multitail $logdir
 }
 
 function enableme(){
