@@ -94,9 +94,10 @@ function listme(){
 
 function psme(){
   cmd='docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a '
-  filterlist="$(ls "${CADDY_DIR}/enabled/")"
-  for item in ${CADDY_DIR}/enabled/*; do
-    docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a | grep "$(basename $item)"
+  filterlist="${CADDY_DIR}/enabled/*"
+  eval $cmd | head -n 1
+  for item in $filterlist; do
+    eval $cmd | grep "$(basename $item)"
   done
 }
 
