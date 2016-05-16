@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CADDY_DIR="caddy/conf"
+CADDY_DIR="caddy"
 SERVICES_DIR="services"
 STARTPAGE_DIR="services/landingpage/www"
 
@@ -43,13 +43,13 @@ function cleanup(){
 
 function makeindex(){
   local newjson=""
-  for i in ${CADDY_DIR}/enabled/*; do
+  for i in ${CADDY_DIR}/conf/enabled/*; do
     if [[ -z ${newjson} ]]; then
       newjson="["
     else
       newjson=${newjson}","
     fi
-    local link=$(head -n 1 ${CADDY_DIR}/enabled/$i | cut -d' ' -f1)
+    local link=$(head -n 1 ${CADDY_DIR}/conf/enabled/$i | cut -d' ' -f1)
     local example="{\"name\": \"$i\",\"link\": \"http://$link\",\"button\": \"btn-primary\",\"image\": \"empty\"}"
     newjson=${newjson}${example}
   done
@@ -73,13 +73,13 @@ function caddylog(){
 }
 
 function enableme(){
-  ln -sr "${CADDY_DIR}/available/${SERVICE}" "${CADDY_DIR}/enabled/"
+  ln -sr "${CADDY_DIR}/conf/available/${SERVICE}" "${CADDY_DIR}/conf/enabled/"
   docker-compose restart caddy
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" up -d
 }
 
 function disableme(){
-  rm -f "${CADDY_DIR}/enabled/${SERVICE}"
+  rm -f "${CADDY_DIR}/conf/enabled/${SERVICE}"
   docker-compose restart caddy
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v
 }
@@ -89,16 +89,16 @@ function listme(){
   ls -1 "${SERVICES_DIR}/"
 
   echo -e "\n\e[34mavailable\e[39m"
-  ls -1 "${CADDY_DIR}/available/"
+  ls -1 "${CADDY_DIR}/conf/available/"
 
   echo -e "\n\e[34menabled\e[39m"
-  ls -1 "${CADDY_DIR}/enabled/"
+  ls -1 "${CADDY_DIR}/conf/enabled/"
   echo -e "\n\n"
 }
 
 function psme(){
   cmd='docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a '
-  filterlist="${CADDY_DIR}/enabled/*"
+  filterlist="${CADDY_DIR}/conf/enabled/*"
   eval $cmd | head -n 1
   for item in $filterlist; do
     eval $cmd | grep "$(basename $item)"
@@ -106,9 +106,9 @@ function psme(){
 }
 
 function sethome(){
-  grep -rn "domain.tld" "${CADDY_DIR}"
+  grep -rn "domain.tld" "${CADDY_DIR}/conf"
   if [[ -n "${SERVICE}" ]]; then
-    find "${CADDY_DIR}" -type f -exec sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" {} \;
   fi
 }
 
