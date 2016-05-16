@@ -10,12 +10,12 @@ STARTPAGE_DIR="services/landingpage/www"
 function start(){
   docker network create --driver=bridge caddy_backend
 
-  echo "create and start landingpage and frontend proxy"
+  echo "create and start frontend proxy"
   docker-compose up -d
 }
 
 function stop(){
-  echo "stop and remove landingpage and frontend proxy"
+  echo "stop and remove frontend proxy"
   docker-compose down --volumes --rmi local
 
   docker network rm caddy_backend
