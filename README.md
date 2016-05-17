@@ -12,7 +12,7 @@
  - docker >= 1.10.0
  - docker-compose >= 1.7.0
  - jq
- 
+ - multitail 
 
 #### 1. create caddy vhost config in `caddy/conf/available/` like
 

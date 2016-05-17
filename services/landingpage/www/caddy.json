@@ -1,14 +1,8 @@
 [
   {
-    "image": "empty",
+    "image": "https://placehold.it/100x100",
     "button": "btn-primary",
-    "link": "http://checkip.c2.fireci.tk",
-    "name": "checkip"
-  },
-  {
-    "image": "empty",
-    "button": "btn-primary",
-    "link": "http://start.c2.fireci.tk",
+    "link": "/",
     "name": "landingpage"
   }
 ]
