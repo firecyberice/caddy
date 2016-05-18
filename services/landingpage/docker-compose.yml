@@ -8,12 +8,16 @@ networks:
 services:
   landingpage:
     image: busybox
-    command: ["httpd","-f","-p","80","-h","/www"]
+    working_dir: /www
     restart: always
+    tty: true
+    stdin_open: true
     read_only: true
+    entrypoint: httpd
+    command: -f -v -p 80 -h .
     expose:
       - 80
+    volumes:
+      - ./www:/www
     networks:
       - backend
-    volumes:
-      - ./www/:/www/
