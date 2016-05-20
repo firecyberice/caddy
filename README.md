@@ -70,17 +70,31 @@ usage:
 
   caddyctl stop               Stop the Caddy server.
 
-  caddyctl list               List all Services (Docker Applications).
+  caddyctl restart            Restart the Caddy server. (recreate caddy container)
+
+  caddyctl reload             Reload the Caddy server config (restart caddy container).
+
+  caddyctl caddylog           Log from the Caddy server.
+
+  caddyctl vhostlog           Log from the Caddy server vhosts.
+
+  caddyctl logs <service>     Logs of a service. (run docker-compose logs -f)
 
   caddyctl enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
 
   caddyctl disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
 
-  caddyctl build <service>    Build Docker Image of a service. (run docker-compose build)
+  caddyctl new <service>      Create new service template. (caddy conf and docker-compose.yml)
 
-  caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
+  caddyctl prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
+
+  caddyctl ps                 Get status of all connected Container.
+
+  caddyctl list               List all Services (Docker Applications).
 
   caddyctl index              Create index page for active Services available at '/caddy.html'.
+
+  caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
 
   caddyctl cleanup            Remove all dangling Docker resources.
 
