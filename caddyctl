@@ -253,13 +253,14 @@ function check_if_program_exists(){
   evaluate_result $? "$cmd is installed"
 }
 
-ERROR=0
-check_if_program_exists jq
-check_if_program_exists multitail
-
-if [[ $ERROR -gt 0 ]]; then
-  exit 1
-fi
+function test_requirements(){
+  prog="${1}"
+  ERROR=0
+  check_if_program_exists "${prog}"
+  if [[ $ERROR -gt 0 ]]; then
+    exit 1
+  fi
+}
 
 mkdir -p "${CADDY_DIR}/logs" >/dev/null 2>&1
 
@@ -292,6 +293,7 @@ SERVICE="${2}"
       caddylog
       ;;
     "vhostlog" )
+      test_requirements multitail
       vhostlog
       ;;
     "cleanup" )
@@ -304,6 +306,7 @@ SERVICE="${2}"
       listme
       ;;
     "index" )
+      test_requirements jq
       makeindex
       ;;
     * )
