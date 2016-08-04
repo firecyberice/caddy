@@ -262,6 +262,11 @@ function test_requirements(){
   fi
 }
 
+echo "Check requirements without exiting"
+check_if_program_exists jq
+check_if_program_exists multitail
+
+    
 mkdir -p "${CADDY_DIR}/logs" >/dev/null 2>&1
 
 if [[ $DEBUG == "true" ]]; then
