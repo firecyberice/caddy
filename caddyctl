@@ -89,6 +89,20 @@ function disableme(){
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v
 }
 
+function upme(){
+  for j in ${CADDY_DIR}/conf/enabled/*; do
+    sname=$(basename $j)
+    docker-compose -f "${SERVICES_DIR}/${sname}/docker-compose.yml" up -d
+  done
+}
+
+function downme(){
+  for j in ${CADDY_DIR}/conf/enabled/*; do
+    sname=$(basename $j)
+    docker-compose -f "${SERVICES_DIR}/${sname}/docker-compose.yml" down -v
+  done
+}
+
 function listme(){
   echo -e "\n\e[34mdocker apps\e[39m"
   ls -1 "${SERVICES_DIR}/"
@@ -187,6 +201,10 @@ usage:
 
   caddyctl stop               Stop the Caddy server.
 
+  caddyctl up                 Create and start all service container
+
+  caddyctl down               Stop and remove all service container
+
   caddyctl restart            Restart the Caddy server. (recreate caddy container)
 
   caddyctl reload             Reload the Caddy server config (restart caddy container).
@@ -263,6 +281,12 @@ SERVICE="${2}"
       ;;
     "reload" )
       reload
+      ;;
+    "up" )
+      upme
+      ;;
+    "down" )
+      downme
       ;;
     "caddylog" )
       caddylog
