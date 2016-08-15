@@ -88,6 +88,10 @@ function disableme(){
   rm -f "${CADDY_DIR}/conf/enabled/${SERVICE}"
   docker-compose restart caddy
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v
+  echo "archive logfiles"
+  local DATE=$(date +"%Y%m%d-%H%M%S")
+  tar czf "${CADDY_DIR}/logs_${DATE}.tar.gz" "${CADDY_DIR}/logs"
+  rm -rf "${CADDY_DIR}/logs/*"
 }
 
 function upme(){
