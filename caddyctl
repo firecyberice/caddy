@@ -42,6 +42,7 @@ function cleanup(){
 
 function makeindex(){
   local newjson=""
+  find ${CADDY_DIR}/conf/enabled -type f -name '*~'
   for j in ${CADDY_DIR}/conf/enabled/*; do
     if [[ -z ${newjson} ]]; then
       newjson="["
@@ -107,6 +108,7 @@ function listme(){
   echo -e "\n\e[34mdocker apps\e[39m"
   ls -1 "${SERVICES_DIR}/"
 
+  find ${CADDY_DIR}/conf/ -type f -name '*~'
   echo -e "\n\e[34mavailable\e[39m"
   ls -1 "${CADDY_DIR}/conf/available/"
 
@@ -266,7 +268,7 @@ echo "Check requirements without exiting"
 check_if_program_exists jq
 check_if_program_exists multitail
 
-    
+
 mkdir -p "${CADDY_DIR}/logs" >/dev/null 2>&1
 
 if [[ $DEBUG == "true" ]]; then
