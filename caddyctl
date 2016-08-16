@@ -141,9 +141,11 @@ function sethome(){
 }
 
 function setmail(){
+  TLD="$(head -n 1 "${CADDY_DIR}/conf/available/landingpage" |cut -d: -f1 |cut -d' ' -f1 |cut -d. -f2-)"
   grep -rn "noreply@domain.tld" "${CADDY_DIR}/conf"
+  grep -rn "noreply@${TLD}" "${CADDY_DIR}/conf"
   if [[ -n "${SERVICE}" ]]; then
-    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@\.domain\.tld/\.${SERVICE}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@\.domain\.tld/${SERVICE}/g" -e "s/noreply@${TLD}/${SERVICE}/g" {} \;
   fi
 }
 
