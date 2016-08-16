@@ -81,12 +81,14 @@ function vhostlog(){
 function enableme(){
   ln -sr "${CADDY_DIR}/conf/available/${SERVICE}" "${CADDY_DIR}/conf/enabled/"
   docker-compose restart caddy
+  test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" up -d
 }
 
 function disableme(){
   rm -f "${CADDY_DIR}/conf/enabled/${SERVICE}"
   docker-compose restart caddy
+  test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v
 }
 
