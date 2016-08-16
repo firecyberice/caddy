@@ -1,7 +1,7 @@
 hugo.domain.tld:80 {
   tls off
   # add this if you like to enable tls
-  #  tls noreply@example.com
+  #  tls noreply@domain.tld
   log / /root/.caddy/logs/hugo.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
   root /root/.caddy/startpage/
   errors {
