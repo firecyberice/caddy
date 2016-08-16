@@ -4,7 +4,6 @@ networks:
     external:
       name: caddy_backend
 
-
 services:
   landingpage:
     image: busybox

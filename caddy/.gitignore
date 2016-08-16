@@ -1,0 +1,11 @@
+# ignore logs
+logs/
+
+# tls certs
+letsencrypt/
+
+# caddy config files
+/conf/available/*
+!/conf/available/landingpage
+/conf/enabled/*
+!/conf/enabled/.empty

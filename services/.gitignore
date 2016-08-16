@@ -1,0 +1,8 @@
+/*
+# except
+!.gitignore
+
+# do not ignore landingpage (e.g. changes to website)
+!/landingpage/*
+# link data for landingpage
+/landingpage/www/caddy.json

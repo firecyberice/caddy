@@ -62,13 +62,20 @@ services:
     #   - ./data/:/dokuwiki-data/
 ```
 
-### control command:
+### 3. install example
+`cp -r examples/dokuwiki/* .`
+
+### 4. control command:
 ```
 usage:
 
   caddyctl start              Start the Caddy server.
 
   caddyctl stop               Stop the Caddy server.
+
+  caddyctl up                 Create and start all service container
+
+  caddyctl down               Stop and remove all service container
 
   caddyctl restart            Restart the Caddy server. (recreate caddy container)
 
@@ -96,6 +103,7 @@ usage:
 
   caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
 
-  caddyctl cleanup            Remove all dangling Docker resources.
+  caddyctl setmail <email>    Set email address for tls with letsencrypt.
 
+  caddyctl cleanup            Remove all dangling Docker resources.
 ```
