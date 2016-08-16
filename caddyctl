@@ -42,7 +42,7 @@ function cleanup(){
 
 function makeindex(){
   local newjson=""
-  find ${CADDY_DIR}/conf/enabled -type f -name '*~'
+  find ${CADDY_DIR}/conf/enabled -type f -name '*~' -delete
   for j in ${CADDY_DIR}/conf/enabled/*; do
     if [[ -z ${newjson} ]]; then
       newjson="["
@@ -97,6 +97,7 @@ function disableme(){
 function upme(){
   for j in ${CADDY_DIR}/conf/enabled/*; do
     local sname=$(basename $j)
+    test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
     docker-compose -f "${SERVICES_DIR}/${sname}/docker-compose.yml" up -d
   done
 }
@@ -104,6 +105,7 @@ function upme(){
 function downme(){
   for j in ${CADDY_DIR}/conf/enabled/*; do
     local sname=$(basename $j)
+    test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
     docker-compose -f "${SERVICES_DIR}/${sname}/docker-compose.yml" down -v
   done
 }
@@ -112,7 +114,7 @@ function listme(){
   echo -e "\n\e[34mdocker apps\e[39m"
   ls -1 "${SERVICES_DIR}/"
 
-  find ${CADDY_DIR}/conf/ -type f -name '*~'
+  find ${CADDY_DIR}/conf/ -type f -name '*~' -delete
   echo -e "\n\e[34mavailable\e[39m"
   ls -1 "${CADDY_DIR}/conf/available/"
 
