@@ -138,6 +138,13 @@ function sethome(){
   fi
 }
 
+function setmail(){
+  grep -rn "noreply@domain.tld" "${CADDY_DIR}/conf"
+  if [[ -n "${SERVICE}" ]]; then
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@\.domain\.tld/\.${SERVICE}/g" {} \;
+  fi
+}
+
 function newservice(){
   TLD="$(head -n 1 "${CADDY_DIR}/conf/available/landingpage" |cut -d: -f1 |cut -d' ' -f1 |cut -d. -f2-)"
 
@@ -236,6 +243,8 @@ usage:
   caddyctl index              Create index page for active Services available at '/caddy.html'.
 
   caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
+
+  caddyctl setmail <email>    Set email address for tls with letsencrypt.
 
   caddyctl cleanup            Remove all dangling Docker resources.
 
@@ -345,6 +354,9 @@ SERVICE="${2}"
       ;;
     "sethome" )
       sethome
+    ;;
+    "setmail" )
+      setmail
       ;;
     * )
       usage
