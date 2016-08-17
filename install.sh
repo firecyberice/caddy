@@ -17,6 +17,7 @@ function myinit(){
 
   git checkout -b running
   git rebase caddy/master 1>/dev/null 2>&1
+  [ "$(git diff --name-only --diff-filter=U)" == "$me" ] && git rebase --skip
 }
 
 function myinstall(){
