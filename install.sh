@@ -11,6 +11,9 @@ function myinit(){
 
   git remote add caddy https://github.com/firecyberice/caddy 1>/dev/null 2>&1
   git fetch caddy 1>/dev/null 2>&1
+  
+  git checkout -b conf_only 1>/dev/null 2>&1
+  git checkout master 1>/dev/null 2>&1
 
   git checkout -b running
   git rebase caddy/master 1>/dev/null 2>&1
@@ -30,7 +33,7 @@ function mysave(){
   set +e
   git stash 1>/dev/null 2>&1
   git checkout master 1>/dev/null 2>&1
-  git checkout -b conf_only 1>/dev/null 2>&1
+  git checkout conf_only 1>/dev/null 2>&1
   git stash pop 1>/dev/null 2>&1
   set -e
 
