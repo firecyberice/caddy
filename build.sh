@@ -20,7 +20,7 @@ if [ -e "payload.tar" ]; then
     gzip payload.tar
 
     if [ -e "payload.tar.gz" ]; then
-        mkdir -p dist
+        mkdir -p ../dist
         cat decompress payload.tar.gz > ../dist/$ARCHIVEFILE
         chmod +x ../dist/$ARCHIVEFILE
     else
