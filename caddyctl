@@ -293,9 +293,9 @@ mkdir -p "${CADDY_DIR}/logs" >/dev/null 2>&1
 if [[ $DEBUG == "true" ]]; then
   echo "$@"
   eval "$@"
+  exit 0
 #  exec "$@"
 elif [ $# -eq 1 ]; then
-SERVICE="${2}"
   case "$1" in
     "start" )
       start
@@ -341,7 +341,6 @@ SERVICE="${2}"
   esac
 elif [ $# -eq 2 ]; then
 SERVICE="${2}"
-#if [[ "${SERVICE}" != "landingpage" ]]; then
   case "$1" in
     "enable" )
       enableme
@@ -368,7 +367,7 @@ SERVICE="${2}"
       usage
       ;;
   esac
-#fi
 else
   usage
 fi
+exit 0
