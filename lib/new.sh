@@ -1,7 +1,6 @@
 # 4
 
 read -r -d '' NEW_CADDYFILE << EOM
-
 ${SERVICE}.${TLD}:80 {
   tls off
 # add this if you like to enable tls
@@ -22,6 +21,7 @@ ${SERVICE}.${TLD}:80 {
     proxy_header X-Forwarded-Proto {scheme}
   }
 }
+
 EOM
 
 
@@ -43,6 +43,7 @@ services:
     build:
       context: ./docker/
       dockerfile: Dockerfile
+
 EOM
 
 read -r -d '' NEW_DOCKERFILE << EOM
@@ -52,4 +53,5 @@ COPY index.html /www/index.html
 EXPOSE 80
 ENTRYPOINT ["httpd"]
 CMD ["-f","-v","-p","80","-h", "/www"]
+
 EOM
