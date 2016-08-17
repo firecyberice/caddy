@@ -9,14 +9,14 @@ function myinit(){
   git add $me
   git commit -m "add setup script as initial commit" 1>/dev/null 2>&1
 
-  git remote add caddy https://github.com/firecyberice/caddy 1>/dev/null 2>&1
-  git fetch caddy 1>/dev/null 2>&1
-  
   git checkout -b conf_only 1>/dev/null 2>&1
   git checkout master 1>/dev/null 2>&1
 
+  git remote add caddy https://github.com/firecyberice/caddy 1>/dev/null 2>&1
+  git fetch caddy 1>/dev/null 2>&1
+
   git checkout -b running
-  git rebase caddy/master 1>/dev/null 2>&1
+  git rebase caddy/master
 }
 
 function myinstall(){
