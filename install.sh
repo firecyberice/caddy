@@ -46,7 +46,7 @@ function updateme(){
   echo "update caddy"
   git fetch caddy 1>/dev/null 2>&1
 
-  git checkout -b running
+  git checkout running
   myrebase caddy/master
 
 }
