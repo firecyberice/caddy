@@ -16,7 +16,7 @@ function myinit(){
   git fetch caddy 1>/dev/null 2>&1
 
   git checkout -b running
-  git rebase caddy/master
+  git rebase caddy/master 1>/dev/null 2>&1
 }
 
 function myinstall(){
