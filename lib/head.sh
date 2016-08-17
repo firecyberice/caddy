@@ -3,4 +3,4 @@
 
 CADDY_DIR="caddy"
 SERVICES_DIR="services"
-STARTPAGE_DIR="caddy/www
+STARTPAGE_DIR="caddy/www"
