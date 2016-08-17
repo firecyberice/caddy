@@ -5,7 +5,7 @@ function set_index(){
   find ${CADDY_DIR}/conf/enabled -type f -name '*~' -delete
   for j in ${CADDY_DIR}/conf/enabled/*; do
     if [[ -z ${newjson} ]]; then
-      newjson="["
+      newjson="[{\"name\": \"Home\",\"link\": \"/\",\"button\": \"btn-primary\",\"image\": \"http://placehold.it/100x100\"}"
     else
       newjson=${newjson}","
     fi
