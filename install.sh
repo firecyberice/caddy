@@ -27,10 +27,10 @@ function myinstall(){
 
 function mysave(){
   echo "stash changes"
+  set +e
   git stash 1>/dev/null 2>&1
   git checkout master 1>/dev/null 2>&1
   git checkout -b conf_only 1>/dev/null 2>&1
-  set +e
   git stash pop 1>/dev/null 2>&1
   set -e
 
