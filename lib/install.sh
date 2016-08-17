@@ -1,3 +1,4 @@
+# 5
 
 read -r -d '' INST_GITIGNORE << EOM
 # ignore logs

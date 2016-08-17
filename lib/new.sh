@@ -1,3 +1,4 @@
+# 4
 
 read -r -d '' NEW_CADDYFILE << EOM
 

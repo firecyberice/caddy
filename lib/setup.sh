@@ -1,3 +1,4 @@
+# 6
 
 function set_index(){
   local newjson=""

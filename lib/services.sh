@@ -1,3 +1,4 @@
+# 3
 
 function srv_prepare(){
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" build

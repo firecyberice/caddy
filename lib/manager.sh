@@ -1,3 +1,5 @@
+# 7
+
 function usage () {
 cat << EOM
 usage:
