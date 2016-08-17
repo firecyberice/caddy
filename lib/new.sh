@@ -1,6 +1,6 @@
 # 4
 
-read -r -d '' NEW_CADDYFILE << EOM
+read -r -d '' NEW_CADDYFILE <<EOM
 ${SERVICE}.${TLD}:80 {
   tls off
 # add this if you like to enable tls
@@ -25,7 +25,7 @@ ${SERVICE}.${TLD}:80 {
 EOM
 
 
-read -r -d '' NEW_COMPOSE << EOM
+read -r -d '' NEW_COMPOSE <<EOM
 version: '2'
 networks:
   backend:
@@ -46,7 +46,7 @@ services:
 
 EOM
 
-read -r -d '' NEW_DOCKERFILE << EOM
+read -r -d '' NEW_DOCKERFILE <<EOM
 FROM busybox
 WORKDIR /www
 COPY index.html /www/index.html

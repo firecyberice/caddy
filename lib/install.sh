@@ -1,6 +1,6 @@
 # 5
 
-read -r -d '' INST_GITIGNORE <<- EOM
+read -r -d '' INST_GITIGNORE <<EOM
 # ignore logs
 logs/
 
@@ -9,7 +9,7 @@ letsencrypt/
 
 EOM
 
-read -r -d '' INST_DOCKERFILE <<- EOM
+read -r -d '' INST_DOCKERFILE <<"EOM"
 FROM alpine:3.3
 
 ENV OPENSSL_VERSION 1.0.2e-r0
@@ -35,17 +35,17 @@ ENTRYPOINT ["/usr/sbin/caddy"]
 EOM
 
 
-read -r -d '' INST_CADDYFILE <<- EOM
+read -r -d '' INST_CADDYFILE <<EOM
 #debug.domain.tld {
 #  log stdout
 #  root /root/.caddy/startpage
 #}
-start.domain.tld:80 {
+start.domain.tld:80 , :80 {
   tls off
 # add this if you like to enable tls
 #  tls noreply@domain.tld
   log / /root/.caddy/logs/landingpage.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
-  root /root/.caddy/landingpage
+  root /root/.caddy/www
   errors {
   403 403.html # Forbidden
   404 404.html # Not Found
@@ -62,7 +62,7 @@ import  /root/.caddy/conf/enabled/*
 
 EOM
 
-read -r -d '' INST_COMPOSE <<- EOM
+read -r -d '' INST_COMPOSE <<EOM
 version: "2"
 networks:
   backend:

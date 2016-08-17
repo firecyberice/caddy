@@ -75,7 +75,7 @@ function set_newservice(){
 }
 
 function set_setup(){
-  mkdir -p caddy/{conf/available,conf/enabled,startpage,landingpage,logs}
+  mkdir -p caddy/{conf/available,conf/enabled,startpage,logs}
   echo -e "$INST_GITIGNORE" > caddy/conf/.GITIGNORE
   echo "create caddyfile"
   touch caddy/conf/enabled/.empty
@@ -89,5 +89,5 @@ function set_setup(){
 }
 
 function set_docker(){
-docker build -t firecyberice/caddy:demo - < "$(echo $INST_DOCKERFILE)"
+  echo -e "$INST_DOCKERFILE" | docker build -t firecyberice/caddy:demo -
 }
