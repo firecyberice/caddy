@@ -66,21 +66,25 @@ function set_newservice(){
   TLD="$(head -n 1 "${CADDY_DIR}/conf/caddyfile" |cut -d: -f1 |cut -d' ' -f1 |cut -d. -f2-)"
   mkdir -p ${SERVICES_DIR}/${SERVICE}/docker/
   echo "create caddy vhost"
-  echo $NEW_CADDYFILE > ${CADDY_DIR}/conf/available/${SERVICE}
+  echo -e "$NEW_CADDYFILE" > ${CADDY_DIR}/conf/available/${SERVICE}
   echo "create docker-compose.yml"
-  echo $NEW_COMPOSE > ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
+  echo -e "$NEW_COMPOSE" > ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
   echo "create example Dockerfile"
-  echo $NEW_DOCKERFILE > ${SERVICES_DIR}/${SERVICE}/docker/Dockerfile
+  echo -e "$NEW_DOCKERFILE" > ${SERVICES_DIR}/${SERVICE}/docker/Dockerfile
   echo "Hello ${SERVICE}" > ${SERVICES_DIR}/${SERVICE}/docker/index.html
 }
 
 function set_setup(){
   mkdir -p caddy/{conf/available,conf/enabled,startpage,landingpage,logs}
+  echo -e "$INST_GITIGNORE" > caddy/conf/.GITIGNORE
+  echo "create caddyfile"
   touch caddy/conf/enabled/.empty
-  echo $INST_GITIGNORE > caddy/conf/.GITIGNORE
-  echo $INST_CADDYFILE > caddy/conf/caddyfile
+  echo -e "$INST_CADDYFILE" > caddy/conf/caddyfile
+  echo "create a simple startpage"
   echo "Default Website" > caddy/startpage/index.html
-  echo $INST_COMPOSE > docker-compose.yml
+  echo "create docker-compose.yml for caddy"
+  echo -e "$INST_COMPOSE" > docker-compose.yml
+  echo "append manager to .gitignore"
   echo "manager" >> .gitignore
 }
 
