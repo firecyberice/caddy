@@ -2,7 +2,7 @@
 
 function srv_prepare(){
   docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" build
-  docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" pull
+  docker-compose -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" pull --ignore-pull-failures
 }
 
 function srv_log(){
