@@ -1,15 +1,17 @@
 #!/bin/bash
-ARCHIVEFILE=test.bsx
 
-mkdir -p build/payload
-cp -r www build/payload/
+ARCHIVEFILE="${1:-selfextracting_caddy-docker_installer.bsx}"
+origin=$(pwd)
+
+mkdir -p build_dir/payload
+cp -r www build_dir/payload/
 
 cd lib/
-cat head.sh core.sh services.sh new.sh install.sh setup.sh manager.sh > ../build/payload/manager
-chmod +x ../build/payload/manager
+cat head.sh core.sh services.sh new.sh install.sh setup.sh manager.sh > ../build_dir/payload/manager
+chmod +x ../build_dir/payload/manager
 cd ..
 
-cd build/
+cd build_dir/
 cat << EOM > payload/installer
 #!/bin/bash
 echo "Running Installer"
@@ -75,8 +77,10 @@ else
 fi
 
 echo "$ARCHIVEFILE created"
-# echo -e "\ncleanup"
-# set -x
-# rm -rf payload/www payload/manager payload.tar.gz
-# set +x
+cd $origin
+echo -e "\ncleanup"
+set -x
+tree -L 2 build_dir/
+rm -rf build_dir
+set +x
 exit 0

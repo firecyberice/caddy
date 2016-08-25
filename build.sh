@@ -9,7 +9,7 @@ cd ..
 
 ########################################################################
 
-ARCHIVEFILE=test.bsx
+ARCHIVEFILE="${1:-selfextracting_caddy-docker_installer.bsx}"
 cd build/
 echo "create selfextract"
 cd payload
