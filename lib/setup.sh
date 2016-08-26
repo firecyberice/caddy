@@ -107,9 +107,25 @@ function selectimage(){
   echo "$BASEIMAGE"
 }
 
+function selectcaddy(){
+  local ARCHITECTURE="${1}"
+  local BASEIMAGE
+  case "${ARCHITECTURE}" in
+      arm*|aarch64)
+          CADDYARCH=arm
+          ;;
+      amd64|x86_64)
+          CADDYARCH=amd64
+          ;;
+      * )
+      echo "Your architecture is not supported."
+      ;;
+  esac
+  echo "$CADDYARCH"
+}
 function set_docker(){
-  local tmparch=$(uname -m)
-  local ARCHITECTURE=${tmparch//arm*/arm}
-  local BASEIMAGE=$(selectimage "${tmparch}")
-  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${ARCHITECTURE}" -t firecyberice/caddy:demo -
+  local ARCHITECTURE=$(uname -m)
+  local CADDY_ARCHITECTURE=$(selectcaddy "${ARCHITECTURE}")
+  local BASEIMAGE=$(selectimage "${ARCHITECTURE}")
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" -t firecyberice/caddy:demo -
 }
