@@ -10,7 +10,6 @@ letsencrypt/
 EOM
 
 read -r -d '' INST_DOCKERFILE <<"EOM"
-FROM alpine:3.3
 
 ENV OPENSSL_VERSION 1.0.2e-r0
 
@@ -21,10 +20,16 @@ curl \
 git \
 "openssl>=${OPENSSL_VERSION}"
 
+ENV BASEURL="https://caddyserver.com/download/build?os=linux" \
+    FEATURES="cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"
+ARG ARCH
+ENV ARCH ${ARCH:-amd64}
+ENV URL="${BASEURL}&arch=${ARCH}&features=${FEATURES}"
+
 RUN \
-curl -sL "https://caddyserver.com/download/build?os=linux&arch=amd64&features=cors%2Cgit%2Chugo%2Cipfilter%2Cjsonp" > /tmp/caddy.tar.gz  && \
-tar xzC /usr/sbin/ -f /tmp/caddy.tar.gz caddy && \
-rm -f /tmp/caddy.tar.gz
+curl -sL "${URL}" > /tmp/caddy.tar.gz  && \
+    tar xzC /usr/sbin/ -f /tmp/caddy.tar.gz caddy && \
+    rm -f /tmp/caddy.tar.gz
 
 RUN adduser -Du 1000 caddy
 VOLUME ["/etc/caddy","/home/caddy"]

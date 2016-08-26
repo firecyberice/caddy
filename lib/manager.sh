@@ -46,6 +46,8 @@ usage:
 
   caddyctl build              Build caddy Docker image.
 
+  caddyctl version            Display Version.
+
 EOM
 }
 
@@ -107,6 +109,9 @@ elif [ $# -eq 1 ]; then
       ;;
     "build" )
       set_docker
+      ;;
+    "version" )
+      core_version
       ;;
     * )
       usage

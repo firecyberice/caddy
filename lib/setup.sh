@@ -88,6 +88,26 @@ function set_setup(){
   echo "manager" >> .gitignore
 }
 
+function selectimage(){
+  local ARCHITECTURE="${1}"
+  local BASEIMAGE
+  case "${ARCHITECTURE}" in
+      arm*|aarch64)
+          BASEIMAGE=armhf/alpine:3.4
+          ;;
+      amd64|x86_64)
+          BASEIMAGE=alpine:3.4
+          ;;
+      * )
+      echo "Your architecture is not supported."
+      ;;
+  esac
+  echo "$BASEIMAGE"
+}
+
 function set_docker(){
-  echo -e "$INST_DOCKERFILE" | docker build -t firecyberice/caddy:demo -
+  local tmparch=$(uname -m)
+  local ARCHITECTURE=${tmparch//arm*/arm}
+  local BASEIMAGE=$(selectimage "${tmparch}")
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${ARCHITECTURE}" -t firecyberice/caddy:demo -
 }
