@@ -41,7 +41,7 @@ EOM
 
 
 read -r -d '' INST_CADDYFILE <<EOM
-#debug.domain.tld {
+#debug.domain.tld:80 {
 #  log stdout
 #  root /root/.caddy/startpage
 #}

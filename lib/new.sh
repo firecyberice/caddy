@@ -1,11 +1,11 @@
 # 4
 
 read -r -d '' NEW_CADDYFILE <<EOM
-${SERVICE}.${TLD}:80 {
+SERVICE.TLD:80 {
   tls off
 # add this if you like to enable tls
 #  tls noreply@example.com
-  log / /root/.caddy/logs/${SERVICE}.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
+  log / /root/.caddy/logs/SERVICE.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
   root /root/.caddy/startpage/
   errors {
     403 403.html # Forbidden
@@ -15,7 +15,7 @@ ${SERVICE}.${TLD}:80 {
     503 503.html # Service Unavailable
     504 504.html # Gateway Time-out
   }
-  proxy / http://${SERVICE}:80/ {
+  proxy / http://SERVICE:80/ {
     proxy_header Host {host}
     proxy_header X-Real-IP {remote}
     proxy_header X-Forwarded-Proto {scheme}
@@ -33,14 +33,14 @@ networks:
       name: ${NETWORK}
 
 services:
-  ${SERVICE}:
+  SERVICE:
     networks:
       - backend
-    hostname: ${SERVICE}.${TLD}
+    hostname: SERVICE.TLD
     restart: on-failure:5
     expose:
       - 80
-    image: ${SERVICE}
+    image: SERVICE
     build:
       context: ./docker/
       dockerfile: Dockerfile

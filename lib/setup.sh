@@ -63,12 +63,14 @@ function __test_requirements(){
 }
 
 function set_newservice(){
-  TLD="$(head -n 1 "${CADDY_DIR}/conf/caddyfile" |cut -d: -f1 |cut -d' ' -f1 |cut -d. -f2-)"
+  TLD="$(head -n 1 "${CADDY_DIR}/conf/caddyfile" |cut -d: -f1 |cut -d. -f2-)"
   mkdir -p ${SERVICES_DIR}/${SERVICE}/docker/
   echo "create caddy vhost"
   echo -e "$NEW_CADDYFILE" > ${CADDY_DIR}/conf/available/${SERVICE}
+  sed -i -e "s|TLD|$TLD|g" -e "s|SERVICE|$SERVICE|g" ${CADDY_DIR}/conf/available/${SERVICE}
   echo "create docker-compose.yml"
   echo -e "$NEW_COMPOSE" > ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
+  sed -i -e "s|TLD|$TLD|g" -e "s|SERVICE|$SERVICE|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
   echo "create example Dockerfile"
   echo -e "$NEW_DOCKERFILE" > ${SERVICES_DIR}/${SERVICE}/docker/Dockerfile
   echo "Hello ${SERVICE}" > ${SERVICES_DIR}/${SERVICE}/docker/index.html
