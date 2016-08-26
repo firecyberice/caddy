@@ -73,16 +73,16 @@ version: "2"
 networks:
   backend:
     external:
-      name: caddy_backend
+      name: ${NETWORK}
 
 services:
   caddy:
     build:
       context: caddy/
       dockerfile: Dockerfile
-    image: firecyberice/caddy:dirty
+    image: firecyberice/caddy:demo
     command: -http2=false -conf /root/.caddy/conf/caddyfile
-    restart: always
+    restart: on-failure:5
     #    read_only: true
     cap_add:
       - NET_BIND_SERVICE

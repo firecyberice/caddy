@@ -14,7 +14,7 @@ ${SERVICE}.${TLD}:80 {
     502 502.html # Bad Gateway
     503 503.html # Service Unavailable
     504 504.html # Gateway Time-out
-}
+  }
   proxy / http://${SERVICE}:80/ {
     proxy_header Host {host}
     proxy_header X-Real-IP {remote}
@@ -30,13 +30,14 @@ version: '2'
 networks:
   backend:
     external:
-      name: caddy_backend
+      name: ${NETWORK}
 
 services:
   ${SERVICE}:
     networks:
       - backend
     hostname: ${SERVICE}.${TLD}
+    restart: on-failure:5
     expose:
       - 80
     image: ${SERVICE}
@@ -48,6 +49,7 @@ EOM
 
 read -r -d '' NEW_DOCKERFILE <<EOM
 FROM busybox
+#FROM armhf/busybox
 WORKDIR /www
 COPY index.html /www/index.html
 EXPOSE 80
