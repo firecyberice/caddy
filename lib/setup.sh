@@ -5,7 +5,7 @@ function set_index(){
   find ${CADDY_DIR}/conf/enabled -type f -name '*~' -delete
   for j in ${CADDY_DIR}/conf/enabled/*; do
     if [[ -z ${newjson} ]]; then
-      newjson="[{\"name\": \"Home\",\"link\": \"/\",\"button\": \"btn-primary\",\"image\": \"http://placehold.it/100x100\"}"
+      newjson="["
     else
       newjson=${newjson}","
     fi
@@ -75,7 +75,7 @@ function set_newservice(){
 }
 
 function set_setup(){
-  mkdir -p caddy/{conf/available,conf/enabled,startpage,logs}
+  mkdir -p caddy/{conf/available,conf/enabled,startpage,logs,www} services
   echo -e "$INST_GITIGNORE" > caddy/conf/.GITIGNORE
   echo "create caddyfile"
   touch caddy/conf/enabled/.empty

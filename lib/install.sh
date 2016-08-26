@@ -45,22 +45,23 @@ read -r -d '' INST_CADDYFILE <<EOM
 #  log stdout
 #  root /root/.caddy/startpage
 #}
+
 start.domain.tld:80 , :80 {
   tls off
 # add this if you like to enable tls
 #  tls noreply@domain.tld
-  log / /root/.caddy/logs/landingpage.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
+  log / /root/.caddy/logs/start.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
   root /root/.caddy/www
   errors {
-  403 403.html # Forbidden
-  404 404.html # Not Found
-  408 408.html # Request Time-out
-  500 500.html # Internal Server Error
-  501 501.html # Not Implemented
-  502 502.html # Bad Gateway
-  503 503.html # Service Unavailable
-  504 504.html # Gateway Time-out
-}
+    403 403.html # Forbidden
+    404 404.html # Not Found
+    408 408.html # Request Time-out
+    500 500.html # Internal Server Error
+    501 501.html # Not Implemented
+    502 502.html # Bad Gateway
+    503 503.html # Service Unavailable
+    504 504.html # Gateway Time-out
+  }
 }
 
 import  /root/.caddy/conf/enabled/*
