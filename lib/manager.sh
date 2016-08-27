@@ -1,4 +1,4 @@
-# 7
+# 8
 
 function usage () {
 cat << EOM
@@ -47,6 +47,8 @@ usage:
   caddyctl build              Build caddy Docker image.
 
   caddyctl version            Display Version.
+
+  caddyctl plugins            Add examples for caddy plugins like git hugo markdown to startpage.
 
 EOM
 }
@@ -112,6 +114,9 @@ elif [ $# -eq 1 ]; then
       ;;
     "version" )
       core_version
+      ;;
+    "plugins" )
+      plugin_example
       ;;
     * )
       usage
