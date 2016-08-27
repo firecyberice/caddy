@@ -1,20 +1,11 @@
 # 4
 
 read -r -d '' NEW_CADDYFILE <<EOM
-SERVICE.TLD:80 {
+SERVICE.domain.tld:80 {
   tls off
 # add this if you like to enable tls
-#  tls noreply@example.com
-  log / /root/.caddy/logs/SERVICE.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
-  root /root/.caddy/startpage/
-  errors {
-    403 403.html # Forbidden
-    404 404.html # Not Found
-    500 500.html # Internal Server Error
-    502 502.html # Bad Gateway
-    503 503.html # Service Unavailable
-    504 504.html # Gateway Time-out
-  }
+#  tls noreply@domain.tld
+  log / /data/logs/services.log "[SERVICE] - {when} - {remote} - {proto} {method} - {status} {size}"
   proxy / http://SERVICE:80/ {
     proxy_header Host {host}
     proxy_header X-Real-IP {remote}
@@ -36,7 +27,7 @@ services:
   SERVICE:
     networks:
       - backend
-    hostname: SERVICE.TLD
+    hostname: SERVICE.domain.tld
     restart: on-failure:5
     expose:
       - 80

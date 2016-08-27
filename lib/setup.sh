@@ -24,15 +24,17 @@ function set_home(){
   grep -rn "domain.tld" "${CADDY_DIR}/conf"
   if [[ -n "${SERVICE}" ]]; then
     find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" {} \;
+    sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" ${CADDY_DIR}/conf/caddyfile
+    sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" ${CADDY_DIR}/conf/plugins
   fi
 }
 
 function set_mail(){
-  TLD="$(head -n 1 "${CADDY_DIR}/conf/available/landingpage" |cut -d: -f1 |cut -d' ' -f1 |cut -d. -f2-)"
   grep -rn "noreply@domain.tld" "${CADDY_DIR}/conf"
-  grep -rn "noreply@${TLD}" "${CADDY_DIR}/conf"
   if [[ -n "${SERVICE}" ]]; then
-    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@\.domain\.tld/${SERVICE}/g" -e "s/noreply@${TLD}/${SERVICE}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" {} \;
+    sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" ${CADDY_DIR}/conf/caddyfile
+    sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" ${CADDY_DIR}/conf/plugins
   fi
 }
 
@@ -40,7 +42,8 @@ function __evaluate_result(){
   local returnvalue="${1}"
   local message="${2}"
   if [ "$returnvalue" -eq 0 ]; then
-    echo -e "\e[32m  [PASS] ${message}\e[0m"
+#    echo -e "\e[32m  [PASS] ${message}\e[0m"
+    echo -n ""
   else
     echo -e "\e[31m  [FAIL] ${message}\e[0m"
     ERROR=1
@@ -63,27 +66,24 @@ function __test_requirements(){
 }
 
 function set_newservice(){
-  TLD="$(head -n 1 "${CADDY_DIR}/conf/caddyfile" |cut -d: -f1 |cut -d. -f2-)"
   mkdir -p ${SERVICES_DIR}/${SERVICE}/docker/
   echo "create caddy vhost"
   echo -e "$NEW_CADDYFILE" > ${CADDY_DIR}/conf/available/${SERVICE}
-  sed -i -e "s|TLD|$TLD|g" -e "s|SERVICE|$SERVICE|g" ${CADDY_DIR}/conf/available/${SERVICE}
+  sed -i -e "s|SERVICE|$SERVICE|g" ${CADDY_DIR}/conf/available/${SERVICE}
   echo "create docker-compose.yml"
   echo -e "$NEW_COMPOSE" > ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
-  sed -i -e "s|TLD|$TLD|g" -e "s|SERVICE|$SERVICE|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
+  sed -i -e "s|SERVICE|$SERVICE|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
   echo "create example Dockerfile"
   echo -e "$NEW_DOCKERFILE" > ${SERVICES_DIR}/${SERVICE}/docker/Dockerfile
   echo "Hello ${SERVICE}" > ${SERVICES_DIR}/${SERVICE}/docker/index.html
 }
 
 function set_setup(){
-  mkdir -p caddy/{conf/available,conf/enabled,startpage,logs,www} services
-  echo -e "$INST_GITIGNORE" > caddy/conf/.GITIGNORE
+  mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,logs,www} services
+  echo -e "$INST_GITIGNORE" > ${CADDY_DIR}/conf/.gitignore
   echo "create caddyfile"
-  touch caddy/conf/enabled/.empty
-  echo -e "$INST_CADDYFILE" > caddy/conf/caddyfile
-  echo "create a simple startpage"
-  echo "Default Website" > caddy/startpage/index.html
+  touch ${CADDY_DIR}/conf/enabled/.empty
+  echo -e "$INST_CADDYFILE" > ${CADDY_DIR}/conf/caddyfile
   echo "create docker-compose.yml for caddy"
   echo -e "$INST_COMPOSE" > docker-compose.yml
   echo "append manager to .gitignore"
@@ -127,5 +127,5 @@ function set_docker(){
   local ARCHITECTURE=$(uname -m)
   local CADDY_ARCHITECTURE=$(selectcaddy "${ARCHITECTURE}")
   local BASEIMAGE=$(selectimage "${ARCHITECTURE}")
-  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" -t firecyberice/caddy:demo -
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" -t firecyberice/caddy:frontend -
 }

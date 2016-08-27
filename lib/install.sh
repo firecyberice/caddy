@@ -18,6 +18,7 @@ apk add --no-cache \
 ca-certificates \
 curl \
 git \
+openssh-client \
 "openssl>=${OPENSSL_VERSION}"
 
 ENV BASEURL="https://caddyserver.com/download/build?os=linux" \
@@ -31,40 +32,46 @@ curl -sL "${URL}" > /tmp/caddy.tar.gz  && \
     tar xzC /usr/sbin/ -f /tmp/caddy.tar.gz caddy && \
     rm -f /tmp/caddy.tar.gz
 
-RUN adduser -Du 1000 caddy
-VOLUME ["/etc/caddy","/home/caddy"]
-USER caddy
+# Fix to use git plugin
+RUN mkdir /root/.ssh \
+    && echo -e "\
+StrictHostKeyChecking no\\n\
+UserKnownHostsFile /dev/null\\n\
+    " > /root/.ssh/config
+
+#RUN adduser -Du 1000 caddy \
+#    && mkdir /home/caddy/.ssh \
+#    && cp /root/.ssh/config /home/caddy/.ssh/config
+#USER caddy
 EXPOSE 80 443 2015
-ENTRYPOINT ["/usr/sbin/caddy"]
+ENTRYPOINT ["caddy"]
 
 EOM
 
 
 read -r -d '' INST_CADDYFILE <<EOM
-#debug.domain.tld:80 {
-#  log stdout
-#  root /root/.caddy/startpage
-#}
-
 start.domain.tld:80 , :80 {
   tls off
 # add this if you like to enable tls
 #  tls noreply@domain.tld
-  log / /root/.caddy/logs/start.log "{proto} Request: {method} {path} ... {scheme} {host} {remote}"
-  root /root/.caddy/www
+log / /data/logs/caddy.log "[startpage] - {when} - {remote} - {proto} {method} - {status} {size}"
+  root /data/www
+  minify
+
   errors {
-    403 403.html # Forbidden
-    404 404.html # Not Found
-    408 408.html # Request Time-out
-    500 500.html # Internal Server Error
-    501 501.html # Not Implemented
-    502 502.html # Bad Gateway
-    503 503.html # Service Unavailable
-    504 504.html # Gateway Time-out
+    log /data/logs/error.log
+    403 errors/403.html # Forbidden
+    404 errors/404.html # Not Found
+    408 errors/408.html # Request Time-out
+    500 errors/500.html # Internal Server Error
+    501 errors/501.html # Not Implemented
+    502 errors/502.html # Bad Gateway
+    503 errors/503.html # Service Unavailable
+    504 errors/504.html # Gateway Time-out
   }
 }
 
-import  /root/.caddy/conf/enabled/*
+import  /data/conf/enabled/*
 
 EOM
 
@@ -77,11 +84,7 @@ networks:
 
 services:
   caddy:
-    build:
-      context: caddy/
-      dockerfile: Dockerfile
-    image: firecyberice/caddy:demo
-    command: -http2=false -conf /root/.caddy/conf/caddyfile
+    image: firecyberice/caddy:frontend
     restart: on-failure:5
     #    read_only: true
     cap_add:
@@ -92,7 +95,12 @@ services:
       - 443:443
     networks:
       - backend
+    command: -http2=false -log stdout -conf /data/conf/caddyfile
+    working_dir: /data
+    environment:
+      - CADDYPATH=/data
     volumes:
-      - ./caddy/:/root/.caddy:rw
+      - ./caddy:/data
+      - ./caddy/bin:/root/.caddy/bin
 
 EOM
