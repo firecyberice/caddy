@@ -2,8 +2,9 @@
 
 read -r -d '' PLUGIN_CADDYFILE <<EOM
 start.domain.tld:80/file {
+  tls off
   root /data/htdocs
-  log / /data/logs/plugins.log "[browse] - {when} - {remote} - {proto} {method} - {status} {size}"
+  log / /data/logs/plugins.log "[browse] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
   browse /
   #  protect using HTTP basic auth
@@ -11,8 +12,9 @@ start.domain.tld:80/file {
 }
 
 start.domain.tld:80/filemanager {
+  tls off
   root /data/htdocs/files
-  log / /data/logs/plugins.log "[filemanager] - {when} - {remote} - {proto} {method} - {status} {size}"
+  log / /data/logs/plugins.log "[filemanager] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
   filemanager {
     show /data/htdocs/files/
@@ -22,8 +24,9 @@ start.domain.tld:80/filemanager {
 }
 
 start.domain.tld:80/hugo {
+  tls off
   root /data/htdocs/hugo/public
-  log / /data/logs/plugins.log "[hugo] - {when} - {remote} - {proto} {method} - {status} {size}"
+  log / /data/logs/plugins.log "[hugo] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
   hugo /data/htdocs/hugo
   #  protect the admin area using HTTP basic auth
@@ -31,8 +34,9 @@ start.domain.tld:80/hugo {
 }
 
 start.domain.tld:80/git {
+  tls off
   root /data/htdocs/git/www
-  log / /data/logs/plugins.log "[git] - {when} - {remote} - {proto} {method} - {status} {size}"
+  log / /data/logs/plugins.log "[git] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
   git {
 #    repo      ssh://git@github.com:22/octocat/octocat.github.io.git
@@ -94,5 +98,12 @@ function plugin_example(){
   (echo -e "import  /data/conf/plugins" >> ${CADDY_DIR}/conf/caddyfile)
   set +x
   echo -e "$PLUGIN_WEBLINKS" > ${CADDY_DIR}/www/index.json
-
+  echo "generate RSA ssh key"
+  ssh-keygen -q -N '' -t rsa -f ${CADDY_DIR}/htdocs/git/key/id_rsa
+  echo -e "\e[31mCopy and paste this key as deploy key into git:\e[0m\n"
+  cat ${CADDY_DIR}/htdocs/git/key/id_rsa.pub
+  echo -e "\n\e[31mRegister webhook in your git server.\e[0m"
+  echo "Pointing to: <start.domain.tld/git/webhook> with your"
+  echo "hook secret (default: webhook-secret) from the caddyfile"
+  echo -e "\n\n\e[31mDefault credentials for caddy basicauth: admin:password\e[0m"
 }

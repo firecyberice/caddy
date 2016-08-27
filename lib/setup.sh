@@ -16,7 +16,7 @@ function set_index(){
   done
   newjson=${newjson}"]"
 
-  echo ${newjson} | jq '.' > "${STARTPAGE_DIR}/caddy.json"
+  echo ${newjson} | jq '.' > "${CADDY_DIR}/www/caddy.json"
   echo -e "Index created\nPlease open \e[34m'/caddy.html'\e[39m in your browser."
 }
 
@@ -82,8 +82,9 @@ function set_setup(){
   mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,logs,www} services
   echo -e "$INST_GITIGNORE" > ${CADDY_DIR}/.gitignore
   echo "create caddyfile"
-  touch ${CADDY_DIR}/conf/enabled/.empty
+#  touch ${CADDY_DIR}/conf/enabled/.empty
   echo -e "$INST_CADDYFILE" > ${CADDY_DIR}/conf/caddyfile
+  echo -n "{{.IP}}" > ${CADDY_DIR}/www/ip.txt
   echo "create docker-compose.yml for caddy"
   echo -e "$INST_COMPOSE" > docker-compose.yml
 }

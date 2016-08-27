@@ -59,9 +59,13 @@ start.domain.tld:80 , :80 {
   tls off
 # add this if you like to enable tls
 #  tls noreply@domain.tld
-log / /data/logs/caddy.log "[startpage] - {when} - {remote} - {proto} {method} - {status} {size}"
+  log / /data/logs/caddy.log "[startpage] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
   root /data/www
   minify
+
+  redir /ip /ip.txt
+  mime .txt text/plain
+  templates /ip .txt
 
 #  errors {
 #    log /data/logs/error.log
@@ -74,7 +78,7 @@ log / /data/logs/caddy.log "[startpage] - {when} - {remote} - {proto} {method} -
 #    503 errors/503.html # Service Unavailable
 #    504 errors/504.html # Gateway Time-out
 #  }
-}
+}#END_start
 
 import  /data/conf/enabled/*
 
@@ -96,11 +100,12 @@ services:
       - NET_BIND_SERVICE
     user: root
     ports:
-      - 80:80
-      - 443:443
+    - "80:80"
+    - "443:443"
+#    - "2015:2015"
     networks:
       - backend
-    command: -http2=false -log stdout -conf /data/conf/caddyfile
+    command: -http2=false -conf /data/conf/caddyfile
     working_dir: /data
     environment:
       - CADDYPATH=/data
