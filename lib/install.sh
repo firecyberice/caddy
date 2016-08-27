@@ -6,6 +6,11 @@ logs/
 
 # tls certs
 letsencrypt/
+acme/
+ocsp/
+
+# hugo binary
+bin/
 
 EOM
 
@@ -58,17 +63,17 @@ log / /data/logs/caddy.log "[startpage] - {when} - {remote} - {proto} {method} -
   root /data/www
   minify
 
-  errors {
-    log /data/logs/error.log
-    403 errors/403.html # Forbidden
-    404 errors/404.html # Not Found
-    408 errors/408.html # Request Time-out
-    500 errors/500.html # Internal Server Error
-    501 errors/501.html # Not Implemented
-    502 errors/502.html # Bad Gateway
-    503 errors/503.html # Service Unavailable
-    504 errors/504.html # Gateway Time-out
-  }
+#  errors {
+#    log /data/logs/error.log
+#    403 errors/403.html # Forbidden
+#    404 errors/404.html # Not Found
+#    408 errors/408.html # Request Time-out
+#    500 errors/500.html # Internal Server Error
+#    501 errors/501.html # Not Implemented
+#    502 errors/502.html # Bad Gateway
+#    503 errors/503.html # Service Unavailable
+#    504 errors/504.html # Gateway Time-out
+#  }
 }
 
 import  /data/conf/enabled/*

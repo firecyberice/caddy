@@ -80,14 +80,12 @@ function set_newservice(){
 
 function set_setup(){
   mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,logs,www} services
-  echo -e "$INST_GITIGNORE" > ${CADDY_DIR}/conf/.gitignore
+  echo -e "$INST_GITIGNORE" > ${CADDY_DIR}/.gitignore
   echo "create caddyfile"
   touch ${CADDY_DIR}/conf/enabled/.empty
   echo -e "$INST_CADDYFILE" > ${CADDY_DIR}/conf/caddyfile
   echo "create docker-compose.yml for caddy"
   echo -e "$INST_COMPOSE" > docker-compose.yml
-  echo "append manager to .gitignore"
-  echo "manager" >> .gitignore
 }
 
 function selectimage(){

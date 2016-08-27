@@ -35,7 +35,8 @@ start.domain.tld:80/git {
   log / /data/logs/plugins.log "[git] - {when} - {remote} - {proto} {method} - {status} {size}"
 
   git {
-    repo      ssh://git@github.com:22/octocat/octocat.github.io.git
+#    repo      ssh://git@github.com:22/octocat/octocat.github.io.git
+    repo      https://github.com/octocat/octocat.github.io.git
     branch    master
 #    path      /data/htdocs/git/www
     #  ssh key for pulling private repos
@@ -86,11 +87,11 @@ read -r -d '' PLUGIN_WEBLINKS <<EOM
 EOM
 
 function plugin_example(){
-  mkdir -p ${CADDY_DIR}/htdocs{files,hugo/public,hugo/themes,git/key,git/www}
+  mkdir -p ${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}
   echo "create caddyfile"
   echo -e "$PLUGIN_CADDYFILE" > ${CADDY_DIR}/conf/plugins
   set -x
-  echo -e "import  /data/conf/plugins" > ${CADDY_DIR}/conf/caddyfile
+  (echo -e "import  /data/conf/plugins" >> ${CADDY_DIR}/conf/caddyfile)
   set +x
   echo -e "$PLUGIN_WEBLINKS" > ${CADDY_DIR}/www/index.json
 
