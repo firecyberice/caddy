@@ -3,7 +3,7 @@
 cp -r www build/payload/
 
 cd lib/
-cat head.sh core.sh services.sh new.sh install.sh setup.sh manager.sh > ../build/payload/manager
+cat head.sh core.sh services.sh new.sh install.sh setup.sh plugins.sh manager.sh > ../build/payload/manager
 chmod +x ../build/payload/manager
 cd ..
 

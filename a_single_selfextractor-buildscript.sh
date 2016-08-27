@@ -7,7 +7,7 @@ mkdir -p build_dir/payload
 cp -r www build_dir/payload/
 
 cd lib/
-cat head.sh core.sh services.sh new.sh install.sh setup.sh manager.sh > ../build_dir/payload/manager
+cat head.sh core.sh services.sh new.sh install.sh setup.sh plugins.sh manager.sh > ../build_dir/payload/manager
 chmod +x ../build_dir/payload/manager
 cd ..
 
