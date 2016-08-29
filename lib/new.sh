@@ -1,4 +1,4 @@
-# 4
+# 5
 
 read -r -d '' NEW_CADDYFILE <<EOM
 SERVICE.domain.tld:80 {

@@ -1,4 +1,4 @@
-# 6
+# 8
 
 function set_index(){
   local newjson=""
@@ -78,15 +78,51 @@ function set_newservice(){
   echo "Hello ${SERVICE}" > ${SERVICES_DIR}/${SERVICE}/docker/index.html
 }
 
+function set_caddyplugins(){
+  mkdir -p ${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}
+  echo "create caddyfile"
+  echo -e "$PLUGIN_CADDYFILE" > ${CADDY_DIR}/conf/plugins
+  set -x
+  (echo -e "import  /data/conf/plugins" >> ${CADDY_DIR}/conf/caddyfile)
+  set +x
+  echo -e "$PLUGIN_WEBLINKS" > ${CADDY_DIR}/www/index.json
+  echo "generate RSA ssh key"
+  ssh-keygen -q -N '' -t rsa -f ${CADDY_DIR}/htdocs/git/key/id_rsa
+  echo -e "\e[31mCopy and paste this key as deploy key into git:\e[0m\n"
+  cat ${CADDY_DIR}/htdocs/git/key/id_rsa.pub
+  echo -e "\n\e[31mRegister webhook in your git server.\e[0m"
+  echo "Pointing to: <start.domain.tld/git/webhook> with your"
+  echo "hook secret (default: webhook-secret) from the caddyfile"
+  echo -e "\n\n\e[31mDefault credentials for caddy basicauth: admin:password\e[0m"
+}
+
+function set_createwebsite(){
+  local WWW_DIR="${CADDY_DIR}/www"
+  mkdir -p  ${WWW_DIR}
+  echo -e "User-agent: *\nDisallow: /" > robots.txt
+  echo -n "{{.IP}}" > ${WWW_DIR}/ip.txt
+  echo -e "$WEB_MAINJS" > ${WWW_DIR}/main.js
+
+  echo -e "$WEB_HTML" > ${WWW_DIR}/index.html
+  sed -i -e 's|DATASOURCE|index.json|g' ${WWW_DIR}/index.html
+  sed -i -e 's|FIRSTTITLE|caddy.html|g' ${WWW_DIR}/index.html
+  sed -i -e 's|FIRSTLINK|caddy.html|g' ${WWW_DIR}/index.html
+
+  echo -e "$WEB_HTML" > ${WWW_DIR}/caddy.html
+  sed -i -e 's|DATASOURCE|caddy.json|g' ${WWW_DIR}/caddy.html
+  sed -i -e 's|FIRSTTITLE|index.html|g' ${WWW_DIR}/caddy.html
+  sed -i -e 's|FIRSTLINK|index.html|g' ${WWW_DIR}/caddy.html
+}
+
 function set_setup(){
-  mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,logs,www} services
+  mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,logs} services
   echo -e "$INST_GITIGNORE" > ${CADDY_DIR}/.gitignore
   echo "create caddyfile"
 #  touch ${CADDY_DIR}/conf/enabled/.empty
   echo -e "$INST_CADDYFILE" > ${CADDY_DIR}/conf/caddyfile
-  echo -n "{{.IP}}" > ${CADDY_DIR}/www/ip.txt
   echo "create docker-compose.yml for caddy"
   echo -e "$INST_COMPOSE" > docker-compose.yml
+  set_createwebsite
 }
 
 function selectimage(){

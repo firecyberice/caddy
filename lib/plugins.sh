@@ -1,4 +1,4 @@
-# 7
+# 6
 
 read -r -d '' PLUGIN_CADDYFILE <<EOM
 start.domain.tld:80/file {
@@ -89,21 +89,3 @@ read -r -d '' PLUGIN_WEBLINKS <<EOM
 ]
 
 EOM
-
-function plugin_example(){
-  mkdir -p ${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}
-  echo "create caddyfile"
-  echo -e "$PLUGIN_CADDYFILE" > ${CADDY_DIR}/conf/plugins
-  set -x
-  (echo -e "import  /data/conf/plugins" >> ${CADDY_DIR}/conf/caddyfile)
-  set +x
-  echo -e "$PLUGIN_WEBLINKS" > ${CADDY_DIR}/www/index.json
-  echo "generate RSA ssh key"
-  ssh-keygen -q -N '' -t rsa -f ${CADDY_DIR}/htdocs/git/key/id_rsa
-  echo -e "\e[31mCopy and paste this key as deploy key into git:\e[0m\n"
-  cat ${CADDY_DIR}/htdocs/git/key/id_rsa.pub
-  echo -e "\n\e[31mRegister webhook in your git server.\e[0m"
-  echo "Pointing to: <start.domain.tld/git/webhook> with your"
-  echo "hook secret (default: webhook-secret) from the caddyfile"
-  echo -e "\n\n\e[31mDefault credentials for caddy basicauth: admin:password\e[0m"
-}

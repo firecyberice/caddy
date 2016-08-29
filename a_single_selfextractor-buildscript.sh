@@ -3,15 +3,21 @@
 ARCHIVEFILE="${1:-selfextracting_caddy-docker_installer.bsx}"
 origin=$(pwd)
 
+
+echo "add payload"
 mkdir -p build_dir/payload
 cp -r www build_dir/payload/
 
+
+echo "create manager script"
 cd lib/
-cat head.sh core.sh services.sh new.sh install.sh setup.sh plugins.sh manager.sh > ../build_dir/payload/manager
+cat head.sh core.sh services.sh install.sh new.sh plugins.sh startpage.sh setup.sh manager.sh > ../build_dir/payload/manager
 chmod +x ../build_dir/payload/manager
 cd ..
 
+echo "prepare selfextractor"
 cd build_dir/
+echo "Step 1/2 installer"
 cat << EOM > payload/installer
 #!/bin/bash
 echo "Running Installer"
@@ -29,6 +35,7 @@ mv manager \${CDIR}/
 EOM
 chmod +x payload/installer
 
+echo "Step 2/2 decompress"
 cat << EOM > decompress
 #!/bin/bash
 echo ""

@@ -1,4 +1,4 @@
-# 8
+# 9
 
 function usage () {
 cat << EOM
@@ -116,7 +116,7 @@ elif [ $# -eq 1 ]; then
       core_version
       ;;
     "plugins" )
-      plugin_example
+      set_caddyplugins
       ;;
     * )
       usage
