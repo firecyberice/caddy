@@ -3,10 +3,10 @@
 ARCHIVEFILE="${1:-selfextracting_caddy-docker_installer.bsx}"
 origin=$(pwd)
 
-
-echo "add payload"
 mkdir -p build_dir/payload
-cp -r www build_dir/payload/
+
+# echo "add payload"
+# cp -r www build_dir/payload/
 
 
 echo "create manager script"
