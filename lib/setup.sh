@@ -93,21 +93,28 @@ function set_caddyplugins(){
   echo -e "\n\e[31mRegister webhook in your git server.\e[0m"
   echo "Pointing to: <start.domain.tld/git/webhook> with your"
   echo "hook secret (default: webhook-secret) from the caddyfile"
-  echo -e "\n\n\e[31mDefault credentials for caddy basicauth: admin:password\e[0m"
+  echo -e "\nDefault credentials for caddy basicauth: \e[31madmin:password\e[0m\n"
 }
 
 function set_createwebsite(){
+  echo "create startpage"
   local WWW_DIR="${CADDY_DIR}/www"
   mkdir -p  ${WWW_DIR}
-  echo -e "User-agent: *\nDisallow: /" > robots.txt
+
+  echo "create robots.txt"
+  echo -e "User-agent: *\nDisallow: /" > ${WWW_DIR}/robots.txt
   echo -n "{{.IP}}" > ${WWW_DIR}/ip.txt
+
+  echo "create main.js"
   echo -e "$WEB_MAINJS" > ${WWW_DIR}/main.js
 
+  echo "create index.html"
   echo -e "$WEB_HTML" > ${WWW_DIR}/index.html
   sed -i -e 's|DATASOURCE|index.json|g' ${WWW_DIR}/index.html
   sed -i -e 's|FIRSTTITLE|caddy.html|g' ${WWW_DIR}/index.html
   sed -i -e 's|FIRSTLINK|caddy.html|g' ${WWW_DIR}/index.html
 
+  echo "create caddy.html"
   echo -e "$WEB_HTML" > ${WWW_DIR}/caddy.html
   sed -i -e 's|DATASOURCE|caddy.json|g' ${WWW_DIR}/caddy.html
   sed -i -e 's|FIRSTTITLE|index.html|g' ${WWW_DIR}/caddy.html
@@ -122,6 +129,15 @@ function set_setup(){
   echo -e "$INST_CADDYFILE" > ${CADDY_DIR}/conf/caddyfile
   echo "create docker-compose.yml for caddy"
   echo -e "$INST_COMPOSE" > docker-compose.yml
+  echo "create config.sh for this manager"
+  echo -e "\
+# configfile for caddy manager\n\
+#\n\
+#CADDY_DIR=caddy\n\
+#SERVICES_DIR=services\n\
+#PROJECT=demo\n\
+#NETWORK=caddynet"\
+  > config.sh
   set_createwebsite
 }
 

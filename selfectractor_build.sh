@@ -24,8 +24,8 @@ echo "Running Installer"
 echo -e "\n"
 echo "install in \${CDIR}"
 echo -e "\n"
-mkdir -p \${CDIR}/caddy
-mv www \${CDIR}/caddy/
+# mkdir -p \${CDIR}/caddy
+# mv www \${CDIR}/caddy/
 mv manager \${CDIR}/
 
 #mv caddy ${CDIR}/
