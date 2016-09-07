@@ -173,7 +173,9 @@ function set_setup(){
 #CADDY_DIR=caddy\n\
 #SERVICES_DIR=services\n\
 #PROJECT=demo\n\
-#NETWORK=caddynet"\
+#NETWORK=caddynet\n\
+#MAIL=noreply@domain.tld\n\
+#FQDN=domain.tld\n"\
   > config.sh
   set_createwebsite
 }
