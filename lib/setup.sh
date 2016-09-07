@@ -111,14 +111,14 @@ function set_createwebsite(){
   echo "create index.html"
   echo -e "$WEB_HTML" > ${WWW_DIR}/index.html
   sed -i -e 's|DATASOURCE|index.json|g' ${WWW_DIR}/index.html
-  sed -i -e 's|FIRSTTITLE|caddy.html|g' ${WWW_DIR}/index.html
+  sed -i -e 's|FIRSTTITLE|caddy|g' ${WWW_DIR}/index.html
   sed -i -e 's|FIRSTLINK|caddy.html|g' ${WWW_DIR}/index.html
 
   echo "create caddy.html"
   echo -e "$WEB_HTML" > ${WWW_DIR}/caddy.html
   sed -i -e 's|DATASOURCE|caddy.json|g' ${WWW_DIR}/caddy.html
-  sed -i -e 's|FIRSTTITLE|index.html|g' ${WWW_DIR}/caddy.html
-  sed -i -e 's|FIRSTLINK|index.html|g' ${WWW_DIR}/caddy.html
+  sed -i -e 's|FIRSTTITLE|start|g' ${WWW_DIR}/caddy.html
+  sed -i -e 's|FIRSTLINK|/|g' ${WWW_DIR}/caddy.html
 }
 
 function set_setup(){
