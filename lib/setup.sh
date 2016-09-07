@@ -20,23 +20,29 @@ function set_index(){
   echo -e "Index created\nPlease open \e[34m'/caddy.html'\e[39m in your browser."
 }
 
-function set_home(){
+function set_variables(){
   grep -rn "domain.tld" "${CADDY_DIR}/conf"
-  if [[ -n "${SERVICE}" ]]; then
+  if [[ -n "${FQND}" ]]; then
+    echo "set FQDN in caddyfiles"
     find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" {} \;
     sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" ${CADDY_DIR}/conf/caddyfile
     sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" ${CADDY_DIR}/conf/plugins
   fi
-}
 
-function set_mail(){
-  grep -rn "noreply@domain.tld" "${CADDY_DIR}/conf"
-  if [[ -n "${SERVICE}" ]]; then
+  if [[ -n "${MAIL}" ]]; then
+    echo "set MAIL for letsencrypt in caddyfiles"
     find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" {} \;
     sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" ${CADDY_DIR}/conf/caddyfile
     sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" ${CADDY_DIR}/conf/plugins
   fi
+
+  if [[ -n "${NETWORK}" ]]; then
+    echo "set NETWORK in docker-compose.yml files"
+    find "${SERVICES_DIR}/" -mindepth 1 -maxdepth 1 -type f -name 'docker-compose.yml' -exec sed -i -e "s/NETWORK/${NETWORK}/g" {} \;
+    sed -i -e "s/NETWORK/${NETWORK}/g" docker-compose.yml
+  fi
 }
+
 
 function __evaluate_result(){
   local returnvalue="${1}"
