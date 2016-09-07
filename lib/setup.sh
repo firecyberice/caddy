@@ -160,7 +160,6 @@ function selectimage(){
 
 function selectcaddy(){
   local ARCHITECTURE="${1}"
-  local BASEIMAGE
   case "${ARCHITECTURE}" in
       arm*|aarch64)
           CADDYARCH=arm
