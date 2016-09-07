@@ -1,7 +1,7 @@
 # 6
 
 read -r -d '' PLUGIN_CADDYFILE <<EOM
-start.domain.tld:80/file {
+http://start.domain.tld:80/file {
   tls off
   root /data/htdocs
   log / /data/logs/plugins.log "[browse] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
@@ -11,7 +11,7 @@ start.domain.tld:80/file {
   basicauth / admin password
 }
 
-start.domain.tld:80/filemanager {
+http://start.domain.tld:80/filemanager {
   tls off
   root /data/htdocs/files
   log / /data/logs/plugins.log "[filemanager] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
@@ -23,7 +23,7 @@ start.domain.tld:80/filemanager {
   basicauth / admin password
 }
 
-start.domain.tld:80/hugo {
+http://start.domain.tld:80/hugo {
   tls off
   root /data/htdocs/hugo/public
   log / /data/logs/plugins.log "[hugo] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
@@ -33,7 +33,7 @@ start.domain.tld:80/hugo {
   basicauth /admin admin password
 }
 
-start.domain.tld:80/git {
+http://start.domain.tld:80/git {
   tls off
   root /data/htdocs/git/www
   log / /data/logs/plugins.log "[git] - {when} - {remote} - {proto} {method} {path} - {status} {size}"

@@ -56,7 +56,7 @@ EOM
 
 
 read -r -d '' INST_CADDYFILE <<EOM
-start.domain.tld:80 , :80 {
+http://start.domain.tld:80 , http://:80 , http://www.domain.tld:80 , http://domain.tld:80 {
   tls off
 # add this if you like to enable tls
 #  tls noreply@domain.tld

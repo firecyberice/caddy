@@ -1,7 +1,7 @@
 # 5
 
 read -r -d '' NEW_CADDYFILE <<EOM
-SERVICE.domain.tld:80 {
+http://SERVICE.domain.tld:80 {
   tls off
 # add this if you like to enable tls
 #  tls noreply@domain.tld
