@@ -22,8 +22,3 @@ function srv_disable(){
   test -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" && \
   docker-compose ${PROJECT} -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v
 }
-
-function srv_vhostlog(){
-  local logdir="${CADDY_DIR}/logs/*"
-  multitail $logdir
-}

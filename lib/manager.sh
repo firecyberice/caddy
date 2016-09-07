@@ -34,8 +34,6 @@ usage:
 
   caddyctl logs <service>     Logs of a service. (run docker-compose logs -f)
 
-  caddyctl vhostlog           Log from the Caddy server vhosts.
-
   caddyctl index              Create index page for active Services available at '/caddy.html'.
 
   caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
@@ -56,7 +54,6 @@ EOM
 
 echo "Check requirements without exiting"
 __check_if_program_exists jq
-__check_if_program_exists multitail
 
 
 mkdir -p "${CADDY_DIR}/logs" >/dev/null 2>&1
@@ -88,10 +85,6 @@ elif [ $# -eq 1 ]; then
       ;;
     "caddylog" )
       core_caddylog
-      ;;
-    "vhostlog" )
-      __test_requirements multitail
-      srv_vhostlog
       ;;
     "cleanup" )
       core_cleanup
