@@ -57,16 +57,17 @@ function __evaluate_result(){
 }
 
 function __check_if_program_exists(){
-  cmd="${1}"
+  local cmd="${1}"
   command -v $cmd >/dev/null 2>&1
   __evaluate_result $? "$cmd is installed"
 }
 
 function __test_requirements(){
-  prog="${1}"
+  local prog="${1}"
   ERROR=0
   __check_if_program_exists "${prog}"
   if [[ $ERROR -gt 0 ]]; then
+    echo "Please execute 'apt-get install -y ${prog}' to install ${prog}"
     exit 1
   fi
 }
