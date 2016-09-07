@@ -179,4 +179,8 @@ function set_docker(){
   local CADDY_ARCHITECTURE=$(selectcaddy "${ARCHITECTURE}")
   local BASEIMAGE=$(selectimage "${ARCHITECTURE}")
   echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" -t firecyberice/caddy:frontend -
+
+  echo -e "\nTag image with corresponding caddy version"
+  local caddy_version=$(docker run --rm firecyberice/caddy:frontend --version | cut -d' ' -f2)
+  docker tag firecyberice/caddy:frontend firecyberice/caddy:${caddy_version}
 }
