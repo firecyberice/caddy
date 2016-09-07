@@ -36,9 +36,9 @@ usage:
 
   caddyctl index              Create index page for active Services available at '/caddy.html'.
 
-  caddyctl sethome <fqdn>     Set FQDN for all vhosts. (e.g.: <domain.tld>)
-
-  caddyctl setmail <email>    Set email address for tls with letsencrypt.
+  caddyctl setvars            Set FQDN for all vhosts to ${FQDN}. (e.g.: <domain.tld>)
+                              Set email address to ${MAIL} for tls with letsencrypt.
+                              Replace NETWORK in all docker-compose.yml files with ${NETWORK}.
 
   caddyctl setup              Create config folders.
 
@@ -54,9 +54,6 @@ EOM
 
 echo "Check requirements without exiting"
 __check_if_program_exists jq
-
-
-mkdir -p "${CADDY_DIR}/logs" >/dev/null 2>&1
 
 if [[ $DEBUG == "true" ]]; then
   echo "$@"
@@ -99,6 +96,9 @@ elif [ $# -eq 1 ]; then
       __test_requirements jq
       set_index
       ;;
+    "setvars" )
+      set_variables
+      ;;
     "setup" )
       set_setup
       ;;
@@ -132,12 +132,6 @@ SERVICE="${2}"
       ;;
     "logs" )
       srv_log
-      ;;
-    "sethome" )
-      set_home
-    ;;
-    "setmail" )
-      set_mail
       ;;
     * )
       usage

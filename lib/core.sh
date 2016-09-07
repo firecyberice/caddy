@@ -8,6 +8,7 @@ function core_start(){
   docker network create --driver=bridge ${NETWORK}
 
   echo "create and start frontend proxy"
+  grep "name: ${NETWORK}" docker-compose.yml
   docker-compose ${PROJECT} up -d
 }
 
@@ -72,7 +73,7 @@ function core_ps(){
       eval $cmd | grep "$(basename $item)_"
     done
   else
-    eval $cmd | grep "${PROJECT##-p }"    
+    eval $cmd | grep "${PROJECT##-p }"
   fi
 }
 
