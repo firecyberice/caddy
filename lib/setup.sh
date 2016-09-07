@@ -119,10 +119,10 @@ function set_get_hugo(){
 
   local HUGO_VERSION=0.16
   local URL="https://github.com/spf13/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_${OS_ARCH}.tgz"
-
-  curl -s "${URL}" > ${CADDY_DIR}/bin/hugo.tgz
-  tar xzC ${CADDY_DIR}/bin/ -f hugo.tgz hugo
-  rm ${CADDY_DIR}/bin/hugo.tgz
+  mkdir -p ${CADDY_DIR}/bin
+  curl -sSLo "${CADDY_DIR}/bin/hugo.tgz" "${URL}"
+  tar xvzf "${CADDY_DIR}/bin/hugo.tgz" -C "${CADDY_DIR}/bin/" ./hugo
+  rm -f "${CADDY_DIR}/bin/hugo.tgz"
 }
 
 function set_createwebsite(){
