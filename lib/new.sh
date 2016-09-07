@@ -7,9 +7,7 @@ SERVICE.domain.tld:80 {
 #  tls noreply@domain.tld
   log / /data/logs/services.log "[SERVICE] - {when} - {remote} - {proto} {method} - {status} {size}"
   proxy / http://SERVICE:80/ {
-    proxy_header Host {host}
-    proxy_header X-Real-IP {remote}
-    proxy_header X-Forwarded-Proto {scheme}
+    transparent
   }
 }
 
