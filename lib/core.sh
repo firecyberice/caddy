@@ -68,7 +68,7 @@ function core_ps(){
   eval $cmd | head -n 1
   eval $cmd | grep "caddy"
   for item in $filterlist; do
-    eval $cmd | grep "_$(basename $item)_"
+    eval $cmd | grep "$(basename $item)_"
   done
 }
 
