@@ -30,7 +30,8 @@ ENV BASEURL="https://caddyserver.com/download/build?os=linux" \
     FEATURES="cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"
 ARG ARCH
 ENV ARCH ${ARCH:-amd64}
-ENV URL="${BASEURL}&arch=${ARCH}&features=${FEATURES}"
+ENV URL="${BASEURL}&arch=${ARCH}&features=${FEATURES}" \
+    PATH=${PATH}:/data/bin
 
 RUN \
 curl -sL "${URL}" > /tmp/caddy.tar.gz  && \
@@ -111,6 +112,5 @@ services:
       - CADDYPATH=/data
     volumes:
       - ./caddy:/data
-      - ./caddy/bin:/root/.caddy/bin
 
 EOM
