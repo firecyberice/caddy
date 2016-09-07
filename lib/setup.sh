@@ -143,7 +143,6 @@ function set_setup(){
 
 function selectimage(){
   local ARCHITECTURE="${1}"
-  local BASEIMAGE
   case "${ARCHITECTURE}" in
       arm*|aarch64)
           BASEIMAGE=armhf/alpine:3.4
