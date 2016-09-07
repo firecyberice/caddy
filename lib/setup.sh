@@ -92,7 +92,8 @@ function set_caddyplugins(){
   echo "create caddyfile"
   echo -e "$PLUGIN_CADDYFILE" > ${CADDY_DIR}/conf/plugins
   set -x
-  (echo -e "import  /data/conf/plugins" >> ${CADDY_DIR}/conf/caddyfile)
+  (grep -q "import  /data/conf/plugins" "${CADDY_DIR}/conf/caddyfile" || \
+  echo "import  /data/conf/plugins" >> "${CADDY_DIR}/conf/caddyfile")
   set +x
   echo -e "$PLUGIN_WEBLINKS" > ${CADDY_DIR}/www/index.json
   echo "generate RSA ssh key"
