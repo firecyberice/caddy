@@ -11,6 +11,11 @@ function srv_log(){
 
 function srv_enable(){
   ln -sr "${CADDY_DIR}/conf/available/${SERVICE}" "${CADDY_DIR}/conf/enabled/"
+  # add import if files are available in enabled/ and import does not exist
+  [[ $(ls -A "caddy/conf/enabled/") ]] || \
+  grep -q "import /data/conf/enabled/*" "caddy/conf/caddyfile" && \
+  echo "import /data/conf/enabled/*" >> "caddy/conf/caddyfile"
+
   docker-compose ${PROJECT} restart caddy
   test -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" && \
   docker-compose ${PROJECT} -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" up -d
@@ -18,6 +23,8 @@ function srv_enable(){
 
 function srv_disable(){
   rm -f "${CADDY_DIR}/conf/enabled/${SERVICE}"
+  # remove import if NO files are available in enabled/ and import does exist
+  [[ $(ls -A "caddy/conf/enabled/") ]] || sed -i -e '\|import /data/conf/enabled/\*|d' "caddy/conf/caddyfile"
   docker-compose ${PROJECT} restart caddy
   test -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" && \
   docker-compose ${PROJECT} -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v

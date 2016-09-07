@@ -81,7 +81,6 @@ http://start.domain.tld:80 , http://:80 , http://www.domain.tld:80 , http://doma
 #  }
 }#END_start
 
-import  /data/conf/enabled/*
 
 EOM
 
