@@ -80,6 +80,8 @@ function set_newservice(){
 
 function set_caddyplugins(){
   mkdir -p ${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}
+  echo -e "fetch hugo"
+  set_get_hugo
   echo "create caddyfile"
   echo -e "$PLUGIN_CADDYFILE" > ${CADDY_DIR}/conf/plugins
   set -x
@@ -94,6 +96,33 @@ function set_caddyplugins(){
   echo "Pointing to: <start.domain.tld/git/webhook> with your"
   echo "hook secret (default: webhook-secret) from the caddyfile"
   echo -e "\nDefault credentials for caddy basicauth: \e[31madmin:password\e[0m\n"
+}
+
+function set_get_hugo(){
+  case $(uname -m) in
+    arm|armhf)
+      OS_ARCH=linux-arm32
+      ;;
+    arm64|aarch64)
+      OS_ARCH=linux-arm64
+      ;;
+    amd64|x86_64)
+      OS_ARCH=linux-64bit
+      ;;
+    x86|i386)
+      OS_ARCH=linux-32bit
+      ;;
+    * )
+    echo "Your architecture is not supported."
+    ;;
+  esac
+
+  local HUGO_VERSION=0.16
+  local URL="https://github.com/spf13/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_${OS_ARCH}.tgz"
+
+  curl -s "${URL}" > ${CADDY_DIR}/bin/hugo.tgz
+  tar xzC ${CADDY_DIR}/bin/ -f hugo.tgz hugo
+  rm ${CADDY_DIR}/bin/hugo.tgz
 }
 
 function set_createwebsite(){
