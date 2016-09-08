@@ -14,14 +14,14 @@ function core_start(){
 
 function core_stop(){
   echo "stop and remove frontend proxy"
-  docker-compose ${PROJECT} down --volumes --rmi local
+  docker-compose ${PROJECT} down --rmi local
 
   docker network rm ${NETWORK}
 }
 
 function core_restart(){
   echo "restart frontend proxy"
-  docker-compose ${PROJECT} down -v
+  docker-compose ${PROJECT} down --volumes
   docker-compose ${PROJECT} up -d
 }
 
