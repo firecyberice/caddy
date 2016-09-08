@@ -93,7 +93,7 @@ networks:
 
 services:
   caddy:
-    image: firecyberice/caddy:frontend
+    image: ${CADDY_IMAGENAME}
     restart: on-failure:5
     #    read_only: true
     cap_add:
