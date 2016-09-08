@@ -1,10 +1,10 @@
 # 5
 
 read -r -d '' NEW_CADDYFILE <<EOM
-http://SERVICE.domain.tld:80 {
+http://SERVICE.FQDN:80 {
   tls off
 # add this if you like to enable tls
-#  tls noreply@domain.tld
+#  tls MAIL
   log / /data/logs/services.log "[SERVICE] - {when} - {remote} - {proto} {method} - {status} {size}"
   proxy / http://SERVICE:80/ {
     transparent
@@ -19,13 +19,12 @@ version: '2'
 networks:
   backend:
     external:
-      name: ${NETWORK}
+      name: NETWORK
 
 services:
   SERVICE:
     networks:
       - backend
-    hostname: SERVICE.domain.tld
     restart: on-failure:5
     expose:
       - 80
