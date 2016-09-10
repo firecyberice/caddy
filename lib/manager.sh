@@ -51,6 +51,24 @@ usage:
 EOM
 }
 
+function here_install(){
+    core_version
+    set_docker
+    if [[ ! -f config.sh ]]; then
+      set_setup
+      set_caddyplugins
+      echo -e "Please configure config.sh and execute <$0 setvars> to complete setup."
+      echo -e "Afterwards you can start the frontend with <$0 start>."
+    else
+      set_setup
+      set_caddyplugins
+      set_variables
+      core_list
+      __test_requirements jq
+      set_index
+      core_start
+    fi
+}
 
 echo "Check requirements without exiting"
 __check_if_program_exists jq
@@ -110,6 +128,9 @@ elif [ $# -eq 1 ]; then
       ;;
     "plugins" )
       set_caddyplugins
+      ;;
+    "install" )
+      here_install
       ;;
     * )
       usage
