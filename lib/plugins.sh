@@ -3,6 +3,8 @@
 read -r -d '' PLUGIN_CADDYFILE <<EOM
 http://start.domain.tld:80/file {
   tls off
+# add this if you like to enable tls
+#  tls noreply@domain.tld
   root /data/htdocs
   log / /data/logs/plugins.log "[browse] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
@@ -13,6 +15,8 @@ http://start.domain.tld:80/file {
 
 http://start.domain.tld:80/filemanager {
   tls off
+# add this if you like to enable tls
+#  tls noreply@domain.tld
   root /data/htdocs/files
   log / /data/logs/plugins.log "[filemanager] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
@@ -25,6 +29,8 @@ http://start.domain.tld:80/filemanager {
 
 http://start.domain.tld:80/hugo {
   tls off
+# add this if you like to enable tls
+#  tls noreply@domain.tld
   root /data/htdocs/hugo/public
   log / /data/logs/plugins.log "[hugo] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
@@ -35,6 +41,8 @@ http://start.domain.tld:80/hugo {
 
 http://start.domain.tld:80/git {
   tls off
+# add this if you like to enable tls
+#  tls noreply@domain.tld
   root /data/htdocs/git/www
   log / /data/logs/plugins.log "[git] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
 
