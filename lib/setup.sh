@@ -175,19 +175,20 @@ function set_caddyplugins(){
 
 function set_variables(){
   grep -rn "domain.tld" "${CADDY_DIR}/conf"
-  if [[ -n "${FQND}" ]]; then
+  if [[ -n "${FQDN}" ]]; then
     echo "set FQDN in caddyfiles"
-    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" {} \;
-    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/\.domain\.tld/\.${SERVICE}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/\.domain\.tld/\.${FQDN}/g" {} \;
+    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/\.domain\.tld/\.${FQDN}/g" {} \;
   fi
 
   if [[ -n "${MAIL}" ]]; then
     echo "set MAIL for letsencrypt in caddyfiles"
-    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" {} \;
-    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@domain\.tld/${MAIL}/g" {} \;
+    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/noreply@domain\.tld/${MAIL}/g" {} \;
   fi
 
   sed -i -e "s|CADDY_IMAGENAME|${CADDY_IMAGENAME}|g" docker-compose.yml
+
   if [[ -n "${NETWORK}" ]]; then
     echo "set NETWORK in docker-compose.yml files"
     find "${SERVICES_DIR}/" -mindepth 1 -maxdepth 2 -type f -name 'docker-compose.yml' -exec sed -i -e "s/NETWORK/${NETWORK}/g" {} \;
@@ -205,8 +206,7 @@ function set_setup(){
   echo -e "$INST_COMPOSE" > docker-compose.yml
   echo "create config.sh for this manager"
 
-  if [[ ! -f config.sh ]]; then
-  echo -e "\
+  [[ ! -f config.sh ]] && echo -e "\
 # configfile for caddy manager\n\
 #\n\
 #CADDY_DIR=caddy\n\
@@ -217,7 +217,7 @@ function set_setup(){
 #FQDN=domain.tld\n
 #CADDY_IMAGENAME=fciserver/caddy\n"\
   > config.sh
-  fi
+
   __createwebsite
 }
 
