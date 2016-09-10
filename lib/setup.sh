@@ -62,7 +62,7 @@ function __select_caddy_arch(){
 
 function __select_hugo_arch(){
   case $(uname -m) in
-    arm|armhf)
+    arm|armhf|armv*)
       OS_ARCH=linux-arm32
       ;;
     arm64|aarch64)
@@ -187,9 +187,10 @@ function set_variables(){
     find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/noreply@domain\.tld/${SERVICE}/g" {} \;
   fi
 
+  sed -i -e "s|CADDY_IMAGENAME|${CADDY_IMAGENAME}|g" docker-compose.yml
   if [[ -n "${NETWORK}" ]]; then
     echo "set NETWORK in docker-compose.yml files"
-    find "${SERVICES_DIR}/" -mindepth 1 -maxdepth 1 -type f -name 'docker-compose.yml' -exec sed -i -e "s/NETWORK/${NETWORK}/g" {} \;
+    find "${SERVICES_DIR}/" -mindepth 1 -maxdepth 2 -type f -name 'docker-compose.yml' -exec sed -i -e "s/NETWORK/${NETWORK}/g" {} \;
     sed -i -e "s/NETWORK/${NETWORK}/g" docker-compose.yml
   fi
 }
@@ -203,6 +204,8 @@ function set_setup(){
   echo "create docker-compose.yml for caddy"
   echo -e "$INST_COMPOSE" > docker-compose.yml
   echo "create config.sh for this manager"
+
+  if [[ ! -f config.sh ]]; then
   echo -e "\
 # configfile for caddy manager\n\
 #\n\
@@ -214,6 +217,7 @@ function set_setup(){
 #FQDN=domain.tld\n
 #CADDY_IMAGENAME=fciserver/caddy\n"\
   > config.sh
+  fi
   __createwebsite
 }
 
@@ -224,6 +228,6 @@ function set_docker(){
   echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" -t ${CADDY_IMAGENAME} -
 
   echo -e "\nTag image with corresponding caddy version"
-  local caddy_version=$(docker run --rm firecyberice/caddy:frontend --version | cut -d' ' -f2)
-  docker tag ${CADDY_IMAGENAME} ${CADDY_IMAGENAME}:${caddy_version}
+  local caddy_version=$(docker run --rm ${CADDY_IMAGENAME}:latest --version | cut -d' ' -f2)
+  docker tag ${CADDY_IMAGENAME}:latest ${CADDY_IMAGENAME}:${caddy_version}
 }
