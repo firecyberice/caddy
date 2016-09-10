@@ -89,11 +89,11 @@ version: "2"
 networks:
   backend:
     external:
-      name: ${NETWORK}
+      name: NETWORK
 
 services:
   caddy:
-    image: ${CADDY_IMAGENAME}
+    image: CADDY_IMAGENAME
     restart: on-failure:5
     #    read_only: true
     cap_add:
