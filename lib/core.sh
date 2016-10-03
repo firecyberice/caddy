@@ -27,7 +27,7 @@ function core_restart(){
 
 function core_reload(){
   echo "reload frontend proxy"
-  docker-compose ${PROJECT} restart caddy
+  docker-compose ${PROJECT} restart
 }
 
 function core_up(){
@@ -66,14 +66,14 @@ function core_list(){
 function core_ps(){
   cmd='docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a '
   filterlist="${CADDY_DIR}/conf/enabled/*"
-  eval $cmd | head -n 1
+  eval ${cmd} | head -n 1
   if [[ -z ${PROJECT} ]]; then
-    eval $cmd | grep "caddy"
-    for item in $filterlist; do
-      eval $cmd | grep "$(basename $item)_"
+    eval ${cmd} | grep "caddy"
+    for item in ${filterlist}; do
+      eval ${cmd} | grep "$(basename ${item})_"
     done
   else
-    eval $cmd | grep "${PROJECT##-p }"
+    eval ${cmd} | grep "${PROJECT##-p }"
   fi
 }
 

@@ -3,7 +3,7 @@
 function __evaluate_result(){
   local returnvalue="${1}"
   local message="${2}"
-  if [ "$returnvalue" -eq 0 ]; then
+  if [ "${returnvalue}" -eq 0 ]; then
 #    echo -e "\e[32m  [PASS] ${message}\e[0m"
     echo -n ""
   else
@@ -14,15 +14,15 @@ function __evaluate_result(){
 
 function __check_if_program_exists(){
   local cmd="${1}"
-  command -v $cmd >/dev/null 2>&1
-  __evaluate_result $? "$cmd is installed"
+  command -v ${cmd} >/dev/null 2>&1
+  __evaluate_result $? "${cmd} is installed"
 }
 
 function __test_requirements(){
   local prog="${1}"
   ERROR=0
   __check_if_program_exists "${prog}"
-  if [[ $ERROR -gt 0 ]]; then
+  if [[ ${ERROR} -gt 0 ]]; then
     echo "Please execute 'apt-get install -y ${prog}' to install ${prog}"
     exit 1
   fi
@@ -41,7 +41,7 @@ function __select_base_image(){
       echo "Your architecture is not supported."
       ;;
   esac
-  echo "$BASEIMAGE"
+  echo "${BASEIMAGE}"
 }
 
 function __select_caddy_arch(){
@@ -57,7 +57,7 @@ function __select_caddy_arch(){
       echo "Your architecture is not supported."
       ;;
   esac
-  echo "$CADDYARCH"
+  echo "${CADDYARCH}"
 }
 
 function __select_hugo_arch(){
@@ -78,7 +78,7 @@ function __select_hugo_arch(){
     echo "Your architecture is not supported."
     ;;
   esac
-  echo "$OS_ARCH"
+  echo "${OS_ARCH}"
 
 }
 function __get_hugo(){
@@ -101,16 +101,16 @@ function __createwebsite(){
   echo -n "{{.IP}}" > ${WWW_DIR}/ip.txt
 
   echo "create main.js"
-  echo -e "$WEB_MAINJS" > ${WWW_DIR}/main.js
+  echo -e "${WEB_MAINJS}" > ${WWW_DIR}/main.js
 
   echo "create index.html"
-  echo -e "$WEB_HTML" > ${WWW_DIR}/index.html
+  echo -e "${WEB_HTML}" > ${WWW_DIR}/index.html
   sed -i -e 's|DATASOURCE|index.json|g' ${WWW_DIR}/index.html
   sed -i -e 's|FIRSTTITLE|caddy|g' ${WWW_DIR}/index.html
   sed -i -e 's|FIRSTLINK|caddy.html|g' ${WWW_DIR}/index.html
 
   echo "create caddy.html"
-  echo -e "$WEB_HTML" > ${WWW_DIR}/caddy.html
+  echo -e "${WEB_HTML}" > ${WWW_DIR}/caddy.html
   sed -i -e 's|DATASOURCE|caddy.json|g' ${WWW_DIR}/caddy.html
   sed -i -e 's|FIRSTTITLE|start|g' ${WWW_DIR}/caddy.html
   sed -i -e 's|FIRSTLINK|/|g' ${WWW_DIR}/caddy.html
@@ -139,16 +139,16 @@ function set_index(){
 function set_newservice(){
   mkdir -p ${SERVICES_DIR}/${SERVICE}/docker/
   echo "create caddy vhost"
-  echo -e "$NEW_CADDYFILE" > ${CADDY_DIR}/conf/available/${SERVICE}
-  sed -i -e "s|SERVICE|$SERVICE|g" ${CADDY_DIR}/conf/available/${SERVICE}
-  sed -i -e "s|FQDN|$FQDN|g" ${CADDY_DIR}/conf/available/${SERVICE}
-  sed -i -e "s|MAIL|$MAIL|g" ${CADDY_DIR}/conf/available/${SERVICE}
+  echo -e "${NEW_CADDYFILE}" > ${CADDY_DIR}/conf/available/${SERVICE}
+  sed -i -e "s|SERVICE|${SERVICE}|g" ${CADDY_DIR}/conf/available/${SERVICE}
+  sed -i -e "s|FQDN|${FQDN}|g" ${CADDY_DIR}/conf/available/${SERVICE}
+  sed -i -e "s|MAIL|${ACME_MAIL}|g" ${CADDY_DIR}/conf/available/${SERVICE}
   echo "create docker-compose.yml"
-  echo -e "$NEW_COMPOSE" > ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
-  sed -i -e "s|SERVICE|$SERVICE|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
-  sed -i -e "s|NETWORK|$NETWORK|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
+  echo -e "${NEW_COMPOSE}" > ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
+  sed -i -e "s|SERVICE|${SERVICE}|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
+  sed -i -e "s|NETWORK|${NETWORK}|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
   echo "create example Dockerfile"
-  echo -e "$NEW_DOCKERFILE" > ${SERVICES_DIR}/${SERVICE}/docker/Dockerfile
+  echo -e "${NEW_DOCKERFILE}" > ${SERVICES_DIR}/${SERVICE}/docker/Dockerfile
   echo "Hello ${SERVICE}" > ${SERVICES_DIR}/${SERVICE}/docker/index.html
 }
 
@@ -157,12 +157,12 @@ function set_caddyplugins(){
   echo -e "fetch hugo"
   __get_hugo
   echo "create caddyfile"
-  echo -e "$PLUGIN_CADDYFILE" > ${CADDY_DIR}/conf/plugins
+  echo -e "${PLUGIN_CADDYFILE}" > ${CADDY_DIR}/conf/plugins
   set -x
   (grep -q "import  /data/conf/plugins" "${CADDY_DIR}/conf/caddyfile" || \
   echo "import  /data/conf/plugins" >> "${CADDY_DIR}/conf/caddyfile")
   set +x
-  echo -e "$PLUGIN_WEBLINKS" > ${CADDY_DIR}/www/index.json
+  echo -e "${PLUGIN_WEBLINKS}" > ${CADDY_DIR}/www/index.json
   echo "generate RSA ssh key"
   ssh-keygen -q -N '' -t rsa -f ${CADDY_DIR}/htdocs/git/key/id_rsa
   echo -e "\e[31mCopy and paste this key as deploy key into git:\e[0m\n"
@@ -181,10 +181,10 @@ function set_variables(){
     find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/\.domain\.tld/\.${FQDN}/g" {} \;
   fi
 
-  if [[ -n "${MAIL}" ]]; then
+  if [[ -n "${ACME_MAIL}" ]]; then
     echo "set MAIL for letsencrypt in caddyfiles"
-    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@domain\.tld/${MAIL}/g" {} \;
-    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/noreply@domain\.tld/${MAIL}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@domain\.tld/${ACME_MAIL}/g" {} \;
+    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/noreply@domain\.tld/${ACME_MAIL}/g" {} \;
   fi
 
   sed -i -e "s|CADDY_IMAGENAME|${CADDY_IMAGENAME}|g" docker-compose.yml
@@ -198,12 +198,12 @@ function set_variables(){
 
 function set_setup(){
   mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,logs} services
-  echo -e "$INST_GITIGNORE" > ${CADDY_DIR}/.gitignore
+  echo -e "${INST_GITIGNORE}" > ${CADDY_DIR}/.gitignore
   echo "create caddyfile"
 #  touch ${CADDY_DIR}/conf/enabled/.empty
-  echo -e "$INST_CADDYFILE" > ${CADDY_DIR}/conf/caddyfile
+  echo -e "${INST_CADDYFILE}" > ${CADDY_DIR}/conf/caddyfile
   echo "create docker-compose.yml for caddy"
-  echo -e "$INST_COMPOSE" > docker-compose.yml
+  echo -e "${INST_COMPOSE}" > docker-compose.yml
   echo "create config.sh for this manager"
 
   [[ ! -f config.sh ]] && echo -e "\

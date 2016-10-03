@@ -37,7 +37,7 @@ usage:
   caddyctl index              Create index page for active Services available at '/caddy.html'.
 
   caddyctl setvars            Set FQDN for all vhosts to ${FQDN}. (e.g.: <domain.tld>)
-                              Set email address to ${MAIL} for tls with letsencrypt.
+                              Set email address to ${ACME_MAIL} for tls with letsencrypt.
                               Replace NETWORK in all docker-compose.yml files with ${NETWORK}.
 
   caddyctl setup              Create config folders.
@@ -73,13 +73,13 @@ function here_install(){
 echo "Check requirements without exiting"
 __check_if_program_exists jq
 
-if [[ $DEBUG == "true" ]]; then
+if [[ ${DEBUG} == "true" ]]; then
   echo "$@"
   eval "$@"
   exit 0
 #  exec "$@"
 elif [ $# -eq 1 ]; then
-  case "$1" in
+  case "${1}" in
     "start" )
       core_start
       ;;
@@ -138,7 +138,7 @@ elif [ $# -eq 1 ]; then
   esac
 elif [ $# -eq 2 ]; then
 SERVICE="${2}"
-  case "$1" in
+  case "${1}" in
     "enable" )
       srv_enable
       ;;
