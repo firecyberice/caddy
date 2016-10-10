@@ -4,49 +4,51 @@ function usage () {
 cat << EOM
 usage:
 
-  caddyctl start              Start the Caddy server.
+  ${0} start              Start the Caddy server.
 
-  caddyctl stop               Stop the Caddy server.
+  ${0} stop               Stop the Caddy server.
 
-  caddyctl up                 Create and start all service container
+  ${0} up                 Create and start all service container
 
-  caddyctl down               Stop and remove all service container
+  ${0} down               Stop and remove all service container
 
-  caddyctl restart            Restart the Caddy server. (recreate caddy container)
+  ${0} restart            Restart the Caddy server. (recreate caddy container)
 
-  caddyctl reload             Reload the Caddy server config (restart caddy container).
+  ${0} reload             Reload the Caddy server config (restart caddy container).
 
-  caddyctl list               List all Services (Docker Applications).
+  ${0} list               List all Services (Docker Applications).
 
-  caddyctl ps                 Get status of all connected Container.
+  ${0} ps                 Get status of all connected Container.
 
-  caddyctl cleanup            Remove all dangling Docker resources.
+  ${0} cleanup            Remove all dangling Docker resources.
 
-  caddyctl caddylog           Log from the Caddy server.
+  ${0} caddylog           Log from the Caddy server.
 
-  caddyctl new <service>      Create new service template. (caddy conf and docker-compose.yml)
+  ${0} new <service>      Create new service template. (caddy conf and docker-compose.yml)
 
-  caddyctl prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
+  ${0} prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
 
-  caddyctl enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
+  ${0} enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
 
-  caddyctl disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
+  ${0} disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
 
-  caddyctl logs <service>     Logs of a service. (run docker-compose logs -f)
+  ${0} logs <service>     Logs of a service. (run docker-compose logs -f)
 
-  caddyctl index              Create index page for active Services available at '/caddy.html'.
+  ${0} index              Create index page for active Services available at '/caddy.html'.
 
-  caddyctl setvars            Set FQDN for all vhosts to ${FQDN}. (e.g.: <domain.tld>)
+  ${0} setvars            Set FQDN for all vhosts to ${FQDN}. (e.g.: <domain.tld>)
                               Set email address to ${ACME_MAIL} for tls with letsencrypt.
                               Replace NETWORK in all docker-compose.yml files with ${NETWORK}.
 
-  caddyctl setup              Create config folders.
+  ${0} setup              Create config folders.
 
-  caddyctl build              Build caddy Docker image.
+  ${0} config             Create example config file for this tool.
 
-  caddyctl version            Display Version.
+  ${0} build              Build caddy Docker image.
 
-  caddyctl plugins            Add examples for caddy plugins like git hugo markdown to startpage.
+  ${0} version            Display Version.
+
+  ${0} plugins            Add examples for caddy plugins like git hugo markdown to startpage.
 
 EOM
 }
@@ -57,16 +59,17 @@ function here_install(){
     if [[ ! -f config.sh ]]; then
       set_setup
       set_caddyplugins
+      set_config
       echo -e "Please configure config.sh and execute <$0 setvars> to complete setup."
       echo -e "Afterwards you can start the frontend with <$0 start>."
     else
       set_setup
       set_caddyplugins
       set_variables
-      core_list
+      core_start
       __test_requirements jq
       set_index
-      core_start
+      core_list
     fi
 }
 
@@ -131,6 +134,9 @@ elif [ $# -eq 1 ]; then
       ;;
     "install" )
       here_install
+      ;;
+    "config" )
+      set_config
       ;;
     * )
       usage

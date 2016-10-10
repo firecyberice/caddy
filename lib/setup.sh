@@ -206,7 +206,12 @@ function set_setup(){
   echo -e "${INST_COMPOSE}" > docker-compose.yml
   echo "create config.sh for this manager"
 
-  [[ ! -f config.sh ]] && echo -e "\
+  set_configfile
+  __createwebsite
+}
+
+function set_configfile(){
+[[ ! -f config.sh ]] && echo -e "\
 # configfile for caddy manager\n\
 #\n\
 #CADDY_DIR=caddy\n\
@@ -214,18 +219,17 @@ function set_setup(){
 #PROJECT=demo\n\
 #NETWORK=caddynet\n\
 #MAIL=noreply@domain.tld\n\
-#FQDN=domain.tld\n
+#FQDN=domain.tld\n\
+#CADDY_FEATURES='cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload'\
 #CADDY_IMAGENAME=fciserver/caddy\n"\
-  > config.sh
-
-  __createwebsite
+> config.sh
 }
 
 function set_docker(){
   local ARCHITECTURE=$(uname -m)
   local CADDY_ARCHITECTURE=$(__select_caddy_arch "${ARCHITECTURE}")
   local BASEIMAGE=$(__select_base_image "${ARCHITECTURE}")
-  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" -t ${CADDY_IMAGENAME} -
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" ${CADDY_FEATURES} -t ${CADDY_IMAGENAME} -
 
   echo -e "\nTag image with corresponding caddy version"
   local caddy_version=$(docker run --rm ${CADDY_IMAGENAME}:latest --version | cut -d' ' -f2)
