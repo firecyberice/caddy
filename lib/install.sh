@@ -26,18 +26,18 @@ git \
 openssh-client \
 "openssl>=${OPENSSL_VERSION}"
 
-ENV BASEURL="https://caddyserver.com/download/build?os=linux" \
+ENV BASEURL="https://caddyserver.com/download/build?os=linux"
 
 # ENV FEATURES="cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"
 ARG FEATURES
-ENV FEATURES ${FEATURES:"cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"}
+ENV FEATURES ${FEATURES:-"cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"}
 
 ARG ARCH
 ENV ARCH ${ARCH:-amd64}
 ENV URL="${BASEURL}&arch=${ARCH}&features=${FEATURES}" \
     PATH=${PATH}:/data/bin
 
-RUN \
+RUN echo "Downloading $URL" &&\
 curl -sL "${URL}" > /tmp/caddy.tar.gz  && \
     tar xzC /usr/sbin/ -f /tmp/caddy.tar.gz caddy && \
     rm -f /tmp/caddy.tar.gz

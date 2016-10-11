@@ -59,7 +59,7 @@ function here_install(){
     if [[ ! -f config.sh ]]; then
       set_setup
       set_caddyplugins
-      set_config
+      set_configfile
       echo -e "Please configure config.sh and execute <$0 setvars> to complete setup."
       echo -e "Afterwards you can start the frontend with <$0 start>."
     else
@@ -136,7 +136,7 @@ elif [ $# -eq 1 ]; then
       here_install
       ;;
     "config" )
-      set_config
+      set_configfile
       ;;
     * )
       usage

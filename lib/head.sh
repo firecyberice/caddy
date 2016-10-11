@@ -21,4 +21,4 @@ fi
 [ ${PROJECT:-} ] && PROJECT="-p $PROJECT"
 : ${NETWORK:="caddy_backend"}
 : ${CADDY_IMAGENAME:="fciserver/caddy"}
-[ ${CADDY_FEATURES:-} ] && CADDY_FEATURES="--build-arg ARCH=\"${CADDY_FEATURES}\""
+[ ${CADDY_FEATURES:-} ] && CADDY_FEATURES="--build-arg FEATURES=${CADDY_FEATURES}"

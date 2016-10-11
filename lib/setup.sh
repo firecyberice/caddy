@@ -220,7 +220,7 @@ function set_configfile(){
 #NETWORK=caddynet\n\
 #MAIL=noreply@domain.tld\n\
 #FQDN=domain.tld\n\
-#CADDY_FEATURES='cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload'\
+#CADDY_FEATURES='cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload'\n\
 #CADDY_IMAGENAME=fciserver/caddy\n"\
 > config.sh
 }
