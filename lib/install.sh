@@ -99,7 +99,6 @@ services:
   caddy:
     image: CADDY_IMAGENAME
     restart: on-failure:5
-    #    read_only: true
     cap_add:
       - NET_BIND_SERVICE
     user: root
@@ -109,11 +108,13 @@ services:
 #    - "2015:2015"
     networks:
       - backend
-    command: -http2=false -conf /data/conf/caddyfile
+#    command: -http2=false -conf /data/conf/caddyfile
+    command: -type http -port 80 -http2=false -conf /data/conf/caddyfile
+    read_only: true
     working_dir: /data
     environment:
       - CADDYPATH=/data
     volumes:
-      - ./caddy:/data
+      - ./caddy:/data::rw
 
 EOM
