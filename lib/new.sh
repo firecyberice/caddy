@@ -5,7 +5,7 @@ http://SERVICE.FQDN:80 {
   tls off
 # add this if you like to enable tls
 #  tls MAIL
-  log / /data/logs/services.log "[SERVICE] - {when} - {remote} - {proto} {method} - {status} {size}"
+  log / /data/logs/services.log "[SERVICE] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
   proxy / http://SERVICE:80/ {
     transparent
   }
