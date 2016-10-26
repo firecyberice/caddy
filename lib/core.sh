@@ -42,7 +42,7 @@ function core_down(){
   for j in ${CADDY_DIR}/conf/enabled/*; do
     local sname=$(basename $j)
     test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
-    docker-compose ${PROJECT} -f "${SERVICES_DIR}/${sname}/docker-compose.yml" down -v
+    docker-compose ${PROJECT} -f "${SERVICES_DIR}/${sname}/docker-compose.yml" down
   done
   echo "archive logfiles"
   local DATE=$(date +"%Y%m%d-%H%M%S")

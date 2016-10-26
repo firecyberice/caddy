@@ -27,5 +27,5 @@ function srv_disable(){
   [[ $(ls -A "caddy/conf/enabled/") ]] || sed -i -e '\|import /data/conf/enabled/\*|d' "caddy/conf/caddyfile"
   docker-compose ${PROJECT} restart
   test -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" && \
-  docker-compose ${PROJECT} -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down -v
+  docker-compose ${PROJECT} -f "${SERVICES_DIR}/${SERVICE}/docker-compose.yml" down
 }
