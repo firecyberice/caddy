@@ -102,19 +102,22 @@ services:
     cap_add:
       - NET_BIND_SERVICE
     user: root
-    ports:
-    - "80:80"
-    - "443:443"
-#    - "2015:2015"
     networks:
-      - backend
+    - backend
+    ports:
+      - "80:80"
+      - "443:443"
+#    - "2015:2015"
+#      - "53:53"
+#      - "53:53/udp"
 #    command: -http2=false -conf /data/conf/caddyfile
     command: -type http -port 80 -http2=false -conf /data/conf/caddyfile
+#    command: -type dns -port 53 -conf /data/conf/corefile
     read_only: true
     working_dir: /data
     environment:
       - CADDYPATH=/data
     volumes:
-      - ./caddy:/data::rw
+      - ./caddy:/data:rw
 
 EOM
