@@ -6,7 +6,7 @@
 
 # 1
 
-VERSION="0.8.0"
+VERSION="0.8.5"
 
 if [ -f ./config.sh ]; then
     . ./config.sh
