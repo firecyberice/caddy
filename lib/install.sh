@@ -18,36 +18,33 @@ read -r -d '' INST_DOCKERFILE <<"EOM"
 
 ENV OPENSSL_VERSION 1.0.2e-r0
 
-RUN apk upgrade --no-cache --available && \
-apk add --no-cache \
+RUN apk add --no-cache \
+bash \
 ca-certificates \
 curl \
 git \
 openssh-client \
 "openssl>=${OPENSSL_VERSION}"
 
-ENV BASEURL="https://caddyserver.com/download/build?os=linux"
+# Install hugo
+ENV URL="https://github.com/spf13/hugo/releases/download/v0.17/hugo_0.17_Linux-64bit.tar.gz"
+RUN \
+curl -sSLo /tmp/hugo.tgz ${URL} \
+&& tar xzf /tmp/hugo.tgz -C /tmp hugo_0.17_linux_amd64/hugo_0.17_linux_amd64 \
+&& mv /tmp/hugo_0.17_linux_amd64/hugo_0.17_linux_amd64 /usr/local/bin/hugo \
+&& rm -rf /tmp/*
 
-# ENV FEATURES="cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"
-ARG FEATURES
-ENV FEATURES ${FEATURES:-"DNS%2Ccors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"}
-
-ARG ARCH
-ENV ARCH ${ARCH:-amd64}
-ENV URL="${BASEURL}&arch=${ARCH}&features=${FEATURES}" \
-    PATH=${PATH}:/data/bin
-
-RUN echo "Downloading $URL" &&\
-curl -sL "${URL}" > /tmp/caddy.tar.gz  && \
-    tar xzC /usr/sbin/ -f /tmp/caddy.tar.gz caddy && \
-    rm -f /tmp/caddy.tar.gz
+# Install caddy
+ARG CURL_FEATURES
+ENV CURL_FEATURES ${CURL_FEATURES:-"DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload"}
+RUN curl -fsSL https://getcaddy.com | bash -s ${CURL_FEATURES}
 
 # Fix to use git plugin
 RUN mkdir /root/.ssh \
-    && echo -e "\
+&& echo -e "\
 StrictHostKeyChecking no\\n\
 UserKnownHostsFile /dev/null\\n\
-    " > /root/.ssh/config
+" > /root/.ssh/config
 
 #RUN adduser -Du 1000 caddy \
 #    && mkdir /home/caddy/.ssh \

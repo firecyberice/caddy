@@ -29,66 +29,12 @@ function __test_requirements(){
 }
 
 function __select_base_image(){
-  local ARCHITECTURE="${1}"
-  case "${ARCHITECTURE}" in
-      arm*|aarch64)
-          BASEIMAGE=armhf/alpine:3.4
-          ;;
-      amd64|x86_64)
-          BASEIMAGE=alpine:3.4
-          ;;
-      * )
-      echo "Your architecture is not supported."
-      ;;
+  case $(uname -m) in
+    arm*|aarch64) BASEIMAGE=armhf/alpine:3.4 ;;
+    amd64|x86_64) BASEIMAGE=alpine:3.4 ;;
+    * ) echo "Your architecture is not supported." ;;
   esac
   echo "${BASEIMAGE}"
-}
-
-function __select_caddy_arch(){
-  local ARCHITECTURE="${1}"
-  case "${ARCHITECTURE}" in
-      arm*|aarch64)
-          CADDYARCH=arm
-          ;;
-      amd64|x86_64)
-          CADDYARCH=amd64
-          ;;
-      * )
-      echo "Your architecture is not supported."
-      ;;
-  esac
-  echo "${CADDYARCH}"
-}
-
-function __select_hugo_arch(){
-  case $(uname -m) in
-    arm|armhf|armv*)
-      OS_ARCH=linux-arm32
-      ;;
-    arm64|aarch64)
-      OS_ARCH=linux-arm64
-      ;;
-    amd64|x86_64)
-      OS_ARCH=linux-64bit
-      ;;
-    x86|i386)
-      OS_ARCH=linux-32bit
-      ;;
-    * )
-    echo "Your architecture is not supported."
-    ;;
-  esac
-  echo "${OS_ARCH}"
-
-}
-function __get_hugo(){
-  local OS_ARCH=$(__select_hugo_arch)
-  local HUGO_VERSION=0.16
-  local URL="https://github.com/spf13/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_${OS_ARCH}.tgz"
-  mkdir -p ${CADDY_DIR}/bin
-  curl -sSLo "${CADDY_DIR}/bin/hugo.tgz" "${URL}"
-  tar xvzf "${CADDY_DIR}/bin/hugo.tgz" -C "${CADDY_DIR}/bin/" ./hugo
-  rm -f "${CADDY_DIR}/bin/hugo.tgz"
 }
 
 function __createwebsite(){
@@ -220,16 +166,15 @@ function set_configfile(){
 #NETWORK=caddynet\n\
 #MAIL=noreply@domain.tld\n\
 #FQDN=domain.tld\n\
-#CADDY_FEATURES='DNS%2Ccors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload'\n\
+#CADDY_FEATURES='DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload'\n\
 #CADDY_IMAGENAME=fciserver/caddy\n"\
 > config.sh
 }
 
 function set_docker(){
-  local ARCHITECTURE=$(uname -m)
-  local CADDY_ARCHITECTURE=$(__select_caddy_arch "${ARCHITECTURE}")
-  local BASEIMAGE=$(__select_base_image "${ARCHITECTURE}")
-  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build --build-arg ARCH="${CADDY_ARCHITECTURE}" ${CADDY_FEATURES} -t ${CADDY_IMAGENAME} -
+  local BASEIMAGE=$(__select_base_image)
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}"
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build ${CADDY_FEATURES} -t ${CADDY_IMAGENAME} -
 
   echo -e "\nTag image with corresponding caddy version"
   local caddy_version=$(docker run --rm ${CADDY_IMAGENAME}:latest --version | cut -d' ' -f2)
