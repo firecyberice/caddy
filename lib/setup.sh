@@ -197,7 +197,7 @@ function set_variables(){
 }
 
 function set_setup(){
-  mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,logs} services
+  mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,conf/zones,logs} services
   echo -e "${INST_GITIGNORE}" > ${CADDY_DIR}/.gitignore
   echo "create caddyfile"
 #  touch ${CADDY_DIR}/conf/enabled/.empty
@@ -220,7 +220,7 @@ function set_configfile(){
 #NETWORK=caddynet\n\
 #MAIL=noreply@domain.tld\n\
 #FQDN=domain.tld\n\
-#CADDY_FEATURES='cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload'\n\
+#CADDY_FEATURES='DNS%2Ccors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload'\n\
 #CADDY_IMAGENAME=fciserver/caddy\n"\
 > config.sh
 }

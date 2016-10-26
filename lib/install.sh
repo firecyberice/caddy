@@ -30,7 +30,7 @@ ENV BASEURL="https://caddyserver.com/download/build?os=linux"
 
 # ENV FEATURES="cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"
 ARG FEATURES
-ENV FEATURES ${FEATURES:-"cors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"}
+ENV FEATURES ${FEATURES:-"DNS%2Ccors%2Cfilemanager%2Cgit%2Chugo%2Cipfilter%2Cjwt%2Clocale%2Cminify%2Cratelimit%2Crealip%2Cupload"}
 
 ARG ARCH
 ENV ARCH ${ARCH:-amd64}
