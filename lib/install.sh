@@ -27,6 +27,8 @@ git \
 openssh-client \
 "openssl>=${OPENSSL_VERSION}"
 
+# TODO add bind-tools to generate dnssec-keys
+
 # Install hugo
 ENV URL="https://github.com/spf13/hugo/releases/download/v0.17/hugo_0.17_Linux-64bit.tar.gz"
 RUN \
@@ -51,7 +53,7 @@ UserKnownHostsFile /dev/null\\n\
 #    && mkdir /home/caddy/.ssh \
 #    && cp /root/.ssh/config /home/caddy/.ssh/config
 #USER caddy
-EXPOSE 80 443 2015
+EXPOSE 53 53/udp 80 443 2015
 ENTRYPOINT ["caddy"]
 
 EOM
