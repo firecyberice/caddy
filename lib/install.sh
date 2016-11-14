@@ -22,6 +22,7 @@ RUN apk add --no-cache \
 bash \
 ca-certificates \
 curl \
+drill \
 git \
 openssh-client \
 "openssl>=${OPENSSL_VERSION}"
