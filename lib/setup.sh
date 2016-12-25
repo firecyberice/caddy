@@ -73,7 +73,10 @@ function set_index(){
     fi
     i=$(basename "$j")
     local link=$(head -n 1 "${CADDY_DIR}/conf/enabled/$i" | cut -d' ' -f1)
-    local example="{\"name\": \"$i\",\"link\": \"http://$link\",\"button\": \"btn-primary\",\"image\": \"empty\"}"
+    if [[ "${link}" != http* ]]; then
+      link="http://${link}"
+    fi
+    local example="{\"name\": \"$i\",\"link\": \"$link\",\"button\": \"btn-primary\",\"image\": \"empty\"}"
     newjson="${newjson}${example}"
   done
   newjson="${newjson}]"
