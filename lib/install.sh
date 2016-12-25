@@ -13,8 +13,6 @@ ocsp/
 bin/
 
 EOM
-echo "${INST_GITIGNORE}" > /dev/null
-
 
 read -r -d '' INST_DOCKERFILE <<"EOM"
 
@@ -60,7 +58,6 @@ EXPOSE 53 53/udp 80 443 2015
 ENTRYPOINT ["caddy"]
 
 EOM
-echo "${INST_DOCKERFILE}" > /dev/null
 
 
 read -r -d '' INST_CADDYFILE <<EOM
@@ -89,9 +86,8 @@ http://start.domain.tld:80 http://:80 http://www.domain.tld:80 http://domain.tld
 #  }
 }#END_start
 
-EOM
-echo "${INST_CADDYFILE}" > /dev/null
 
+EOM
 
 read -r -d '' INST_COMPOSE <<EOM
 version: "2"
@@ -126,4 +122,3 @@ services:
       - ./caddy:/data:rw
 
 EOM
-echo "${INST_COMPOSE}" > /dev/null

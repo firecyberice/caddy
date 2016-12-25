@@ -69,7 +69,6 @@ $(document).ready(function(){
 });
 
 EOM
-echo "${WEB_MAINJS}" > /dev/null
 
 
 read -r -d '' WEB_HTML <<"EOM"
@@ -137,4 +136,3 @@ read -r -d '' WEB_HTML <<"EOM"
 </html>
 
 EOM
-echo "${WEB_HTML}" > /dev/null

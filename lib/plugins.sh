@@ -61,8 +61,6 @@ http://start.domain.tld:80/git {
 }
 
 EOM
-echo "${PLUGIN_CADDYFILE}" > /dev/null
-
 
 read -r -d '' PLUGIN_WEBLINKS <<EOM
 [
@@ -99,4 +97,3 @@ read -r -d '' PLUGIN_WEBLINKS <<EOM
 ]
 
 EOM
-echo "${PLUGIN_WEBLINKS}" > /dev/null
