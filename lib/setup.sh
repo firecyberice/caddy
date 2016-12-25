@@ -14,7 +14,7 @@ function __evaluate_result(){
 
 function __check_if_program_exists(){
   local cmd="${1}"
-  command -v ${cmd} >/dev/null 2>&1
+  command -v "${cmd}" >/dev/null 2>&1
   __evaluate_result $? "${cmd} is installed"
 }
 
@@ -40,31 +40,31 @@ function __select_base_image(){
 function __createwebsite(){
   echo "create startpage"
   local WWW_DIR="${CADDY_DIR}/www"
-  mkdir -p  ${WWW_DIR}
+  mkdir -p  "${WWW_DIR}"
 
   echo "create robots.txt"
-  echo -e "User-agent: *\nDisallow: /" > ${WWW_DIR}/robots.txt
-  echo -n "{{.IP}}" > ${WWW_DIR}/ip.txt
+  echo -e "User-agent: *\nDisallow: /" > "${WWW_DIR}/robots.txt"
+  echo -n "{{.IP}}" > "${WWW_DIR}/ip.txt"
 
   echo "create main.js"
   echo -e "${WEB_MAINJS}" > ${WWW_DIR}/main.js
 
   echo "create index.html"
-  echo -e "${WEB_HTML}" > ${WWW_DIR}/index.html
-  sed -i -e 's|DATASOURCE|index.json|g' ${WWW_DIR}/index.html
-  sed -i -e 's|FIRSTTITLE|caddy|g' ${WWW_DIR}/index.html
-  sed -i -e 's|FIRSTLINK|caddy.html|g' ${WWW_DIR}/index.html
+  echo -e "${WEB_HTML}" > "${WWW_DIR}/index.html"
+  sed -i -e 's|DATASOURCE|index.json|g' "${WWW_DIR}/index.html"
+  sed -i -e 's|FIRSTTITLE|caddy|g' "${WWW_DIR}/index.html"
+  sed -i -e 's|FIRSTLINK|caddy.html|g' "${WWW_DIR}/index.html"
 
   echo "create caddy.html"
-  echo -e "${WEB_HTML}" > ${WWW_DIR}/caddy.html
-  sed -i -e 's|DATASOURCE|caddy.json|g' ${WWW_DIR}/caddy.html
-  sed -i -e 's|FIRSTTITLE|start|g' ${WWW_DIR}/caddy.html
-  sed -i -e 's|FIRSTLINK|/|g' ${WWW_DIR}/caddy.html
+  echo -e "${WEB_HTML}" > "${WWW_DIR}/caddy.html"
+  sed -i -e 's|DATASOURCE|caddy.json|g' "${WWW_DIR}/caddy.html"
+  sed -i -e 's|FIRSTTITLE|start|g' "${WWW_DIR}/caddy.html"
+  sed -i -e 's|FIRSTLINK|/|g' "${WWW_DIR}/caddy.html"
 }
 
 function set_index(){
   local newjson=""
-  find ${CADDY_DIR}/conf/enabled -type f -name '*~' -delete
+  find "${CADDY_DIR}/conf/enabled" -type f -name '*~' -delete
   for j in ${CADDY_DIR}/conf/enabled/*; do
     if [[ -z ${newjson} ]]; then
       newjson="["
@@ -74,16 +74,16 @@ function set_index(){
     i=$(basename $j)
     local link=$(head -n 1 ${CADDY_DIR}/conf/enabled/$i | cut -d' ' -f1)
     local example="{\"name\": \"$i\",\"link\": \"http://$link\",\"button\": \"btn-primary\",\"image\": \"empty\"}"
-    newjson=${newjson}${example}
+    newjson="${newjson}${example}"
   done
-  newjson=${newjson}"]"
+  newjson="${newjson}]"
 
-  echo ${newjson} | jq '.' > "${CADDY_DIR}/www/caddy.json"
+  echo "${newjson}" | jq '.' > "${CADDY_DIR}/www/caddy.json"
   echo -e "Index created\nPlease open \e[34m'/caddy.html'\e[39m in your browser."
 }
 
 function set_newservice(){
-  mkdir -p ${SERVICES_DIR}/${SERVICE}/docker/
+  mkdir -p "${SERVICES_DIR}/${SERVICE}/docker/"
   echo "create caddy vhost"
   echo -e "${NEW_CADDYFILE}" > ${CADDY_DIR}/conf/available/${SERVICE}
   sed -i -e "s|SERVICE|${SERVICE}|g" ${CADDY_DIR}/conf/available/${SERVICE}
@@ -99,7 +99,7 @@ function set_newservice(){
 }
 
 function set_caddyplugins(){
-  mkdir -p ${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}
+  mkdir -p "${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}"
   echo -e "fetch hugo"
   __get_hugo
   echo "create caddyfile"
@@ -143,11 +143,11 @@ function set_variables(){
 }
 
 function set_setup(){
-  mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,conf/zones,logs} services
+  mkdir -p "${CADDY_DIR}/{conf/available,conf/enabled,conf/zones,logs}" services
   echo -e "${INST_GITIGNORE}" > ${CADDY_DIR}/.gitignore
   echo "create caddyfile"
 #  touch ${CADDY_DIR}/conf/enabled/.empty
-  echo -e "${INST_CADDYFILE}" > ${CADDY_DIR}/conf/caddyfile
+  echo -e "${INST_CADDYFILE}" > "${CADDY_DIR}/conf/caddyfile"
   echo "create docker-compose.yml for caddy"
   echo -e "${INST_COMPOSE}" > docker-compose.yml
   echo "create config.sh for this manager"
@@ -178,5 +178,5 @@ function set_docker(){
 
   echo -e "\nTag image with corresponding caddy version"
   local caddy_version=$(docker run --rm ${CADDY_IMAGENAME}:latest --version | cut -d' ' -f2)
-  docker tag ${CADDY_IMAGENAME}:latest ${CADDY_IMAGENAME}:${caddy_version}
+  docker tag "${CADDY_IMAGENAME}:latest" "${CADDY_IMAGENAME}:${caddy_version}"
 }
