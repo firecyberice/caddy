@@ -25,6 +25,7 @@ curl \
 drill \
 git \
 openssh-client \
+sudo \
 "openssl>=${OPENSSL_VERSION}"
 
 # TODO add bind-tools to generate dnssec-keys
