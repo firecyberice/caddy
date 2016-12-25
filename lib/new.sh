@@ -1,10 +1,10 @@
 # 5
 
 read -r -d '' NEW_CADDYFILE <<EOM
-http://SERVICE.FQDN:80 {
+http://SERVICE.domain.tld:80 {
   tls off
 # add this if you like to enable tls
-#  tls MAIL
+#  tls ACME_MAIL
   log / /data/logs/services.log "[SERVICE] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
   proxy / http://SERVICE:80/ {
     transparent

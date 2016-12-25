@@ -90,8 +90,8 @@ function set_newservice(){
   echo "create caddy vhost"
   echo -e "${NEW_CADDYFILE}" > "${CADDY_DIR}/conf/available/${SERVICE}"
   sed -i -e "s|SERVICE|${SERVICE}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
-  sed -i -e "s|FQDN|${FQDN}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
-  sed -i -e "s|MAIL|${ACME_MAIL}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
+  sed -i -e "s|domain\.tld|${FQDN}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
+  sed -i -e "s|ACME_MAIL|${ACME_MAIL}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
   echo "create docker-compose.yml"
   echo -e "${NEW_COMPOSE}" > "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
   sed -i -e "s|SERVICE|${SERVICE}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
@@ -126,14 +126,14 @@ function set_variables(){
   grep -rn "domain.tld" "${CADDY_DIR}/conf"
   if [[ -n "${FQDN}" ]]; then
     echo "set FQDN in caddyfiles"
-    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/\.domain\.tld/\.${FQDN}/g" {} \;
-    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/\.domain\.tld/\.${FQDN}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/domain\.tld/${FQDN}/g" {} \;
+    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/domain\.tld/${FQDN}/g" {} \;
   fi
 
   if [[ -n "${ACME_MAIL}" ]]; then
     echo "set MAIL for letsencrypt in caddyfiles"
-    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/noreply@domain\.tld/${ACME_MAIL}/g" {} \;
-    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/noreply@domain\.tld/${ACME_MAIL}/g" {} \;
+    find "${CADDY_DIR}/conf/available" -type f -exec sed -i -e "s/ACME_MAIL/${ACME_MAIL}/g" {} \;
+    find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/ACME_MAIL/${ACME_MAIL}/g" {} \;
   fi
 
   sed -i -e "s|CADDY_IMAGENAME|${CADDY_IMAGENAME}|g" docker-compose.yml
@@ -167,7 +167,7 @@ function set_configfile(){
 #SERVICES_DIR=services\n\
 #PROJECT=demo\n\
 #NETWORK=caddynet\n\
-#MAIL=noreply@domain.tld\n\
+#ACME_MAIL=noreply@domain.tld\n\
 #FQDN=domain.tld\n\
 #CADDY_FEATURES='DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload'\n\
 #CADDY_IMAGENAME=fciserver/caddy\n"\

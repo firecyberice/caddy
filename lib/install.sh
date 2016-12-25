@@ -9,9 +9,6 @@ letsencrypt/
 acme/
 ocsp/
 
-# hugo binary
-bin/
-
 EOM
 
 read -r -d '' INST_DOCKERFILE <<"EOM"
@@ -64,7 +61,7 @@ read -r -d '' INST_CADDYFILE <<EOM
 http://start.domain.tld:80 http://:80 http://www.domain.tld:80 http://domain.tld:80 {
   tls off
 # add this if you like to enable tls
-#  tls noreply@domain.tld
+#  tls ACME_MAIL
   log / /data/logs/caddy.log "[startpage] - {when} - {remote} - {proto} {method} {path} - {status} {size}"
   root /data/www
   minify
@@ -73,17 +70,6 @@ http://start.domain.tld:80 http://:80 http://www.domain.tld:80 http://domain.tld
   mime .txt text/plain
   templates /ip .txt
 
-#  errors {
-#    log /data/logs/error.log
-#    403 errors/403.html # Forbidden
-#    404 errors/404.html # Not Found
-#    408 errors/408.html # Request Time-out
-#    500 errors/500.html # Internal Server Error
-#    501 errors/501.html # Not Implemented
-#    502 errors/502.html # Bad Gateway
-#    503 errors/503.html # Service Unavailable
-#    504 errors/504.html # Gateway Time-out
-#  }
 }#END_start
 
 
