@@ -12,6 +12,7 @@ http://SERVICE.FQDN:80 {
 }
 
 EOM
+echo "${NEW_CADDYFILE}" > /dev/null
 
 
 read -r -d '' NEW_COMPOSE <<EOM
@@ -34,6 +35,8 @@ services:
       dockerfile: Dockerfile
 
 EOM
+echo "${NEW_COMPOSE}" > /dev/null
+
 
 read -r -d '' NEW_DOCKERFILE <<EOM
 FROM busybox
@@ -45,3 +48,4 @@ ENTRYPOINT ["httpd"]
 CMD ["-f","-v","-p","80","-h", "/www"]
 
 EOM
+echo "${NEW_DOCKERFILE}" > /dev/null
