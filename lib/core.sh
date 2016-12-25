@@ -9,32 +9,32 @@ function core_start(){
 
   echo "create and start frontend proxy"
   grep "name: ${NETWORK}" docker-compose.yml
-  docker-compose "${PROJECT}" up -d
+  docker-compose ${PROJECT} up -d
 }
 
 function core_stop(){
   echo "stop and remove frontend proxy"
-  docker-compose "${PROJECT}" down --rmi local
+  docker-compose ${PROJECT} down --rmi local
 
   docker network rm "${NETWORK}"
 }
 
 function core_restart(){
   echo "restart frontend proxy"
-  docker-compose "${PROJECT}" down --volumes
-  docker-compose "${PROJECT}" up -d
+  docker-compose ${PROJECT} down --volumes
+  docker-compose ${PROJECT} up -d
 }
 
 function core_reload(){
   echo "reload frontend proxy"
-  docker-compose "${PROJECT}" restart
+  docker-compose ${PROJECT} restart
 }
 
 function core_up(){
   for j in ${CADDY_DIR}/conf/enabled/*; do
     local sname="$(basename "$j")"
     test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
-    docker-compose "${PROJECT}" -f "${SERVICES_DIR}/${sname}/docker-compose.yml" up -d
+    docker-compose ${PROJECT} -f "${SERVICES_DIR}/${sname}/docker-compose.yml" up -d
   done
 }
 
@@ -42,7 +42,7 @@ function core_down(){
   for j in ${CADDY_DIR}/conf/enabled/*; do
     local sname="$(basename "$j")"
     test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
-    docker-compose "${PROJECT}" -f "${SERVICES_DIR}/${sname}/docker-compose.yml" down
+    docker-compose ${PROJECT} -f "${SERVICES_DIR}/${sname}/docker-compose.yml" down
   done
   echo "archive logfiles"
   local DATE=$(date +"%Y%m%d-%H%M%S")
@@ -86,5 +86,5 @@ function core_cleanup(){
 }
 
 function core_caddylog(){
-  docker-compose "${PROJECT}" logs -f
+  docker-compose ${PROJECT} logs -f
 }
