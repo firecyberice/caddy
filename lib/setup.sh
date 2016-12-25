@@ -47,7 +47,7 @@ function __createwebsite(){
   echo -n "{{.IP}}" > "${WWW_DIR}/ip.txt"
 
   echo "create main.js"
-  echo -e "${WEB_MAINJS}" > ${WWW_DIR}/main.js
+  echo -e "${WEB_MAINJS}" > "${WWW_DIR}/main.js"
 
   echo "create index.html"
   echo -e "${WEB_HTML}" > "${WWW_DIR}/index.html"
@@ -85,17 +85,17 @@ function set_index(){
 function set_newservice(){
   mkdir -p "${SERVICES_DIR}/${SERVICE}/docker/"
   echo "create caddy vhost"
-  echo -e "${NEW_CADDYFILE}" > ${CADDY_DIR}/conf/available/${SERVICE}
-  sed -i -e "s|SERVICE|${SERVICE}|g" ${CADDY_DIR}/conf/available/${SERVICE}
-  sed -i -e "s|FQDN|${FQDN}|g" ${CADDY_DIR}/conf/available/${SERVICE}
-  sed -i -e "s|MAIL|${ACME_MAIL}|g" ${CADDY_DIR}/conf/available/${SERVICE}
+  echo -e "${NEW_CADDYFILE}" > "${CADDY_DIR}/conf/available/${SERVICE}"
+  sed -i -e "s|SERVICE|${SERVICE}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
+  sed -i -e "s|FQDN|${FQDN}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
+  sed -i -e "s|MAIL|${ACME_MAIL}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
   echo "create docker-compose.yml"
-  echo -e "${NEW_COMPOSE}" > ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
-  sed -i -e "s|SERVICE|${SERVICE}|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
-  sed -i -e "s|NETWORK|${NETWORK}|g" ${SERVICES_DIR}/${SERVICE}/docker-compose.yml
+  echo -e "${NEW_COMPOSE}" > "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
+  sed -i -e "s|SERVICE|${SERVICE}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
+  sed -i -e "s|NETWORK|${NETWORK}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
   echo "create example Dockerfile"
-  echo -e "${NEW_DOCKERFILE}" > ${SERVICES_DIR}/${SERVICE}/docker/Dockerfile
-  echo "Hello ${SERVICE}" > ${SERVICES_DIR}/${SERVICE}/docker/index.html
+  echo -e "${NEW_DOCKERFILE}" > "${SERVICES_DIR}/${SERVICE}/docker/Dockerfile"
+  echo "Hello ${SERVICE}" > "${SERVICES_DIR}/${SERVICE}/docker/index.html"
 }
 
 function set_caddyplugins(){
@@ -108,11 +108,11 @@ function set_caddyplugins(){
   (grep -q "import  /data/conf/plugins" "${CADDY_DIR}/conf/caddyfile" || \
   echo "import  /data/conf/plugins" >> "${CADDY_DIR}/conf/caddyfile")
   set +x
-  echo -e "${PLUGIN_WEBLINKS}" > ${CADDY_DIR}/www/index.json
+  echo -e "${PLUGIN_WEBLINKS}" > "${CADDY_DIR}/www/index.json"
   echo "generate RSA ssh key"
-  ssh-keygen -q -N '' -t rsa -f ${CADDY_DIR}/htdocs/git/key/id_rsa
+  ssh-keygen -q -N '' -t rsa -f "${CADDY_DIR}/htdocs/git/key/id_rsa"
   echo -e "\e[31mCopy and paste this key as deploy key into git:\e[0m\n"
-  cat ${CADDY_DIR}/htdocs/git/key/id_rsa.pub
+  cat "${CADDY_DIR}/htdocs/git/key/id_rsa.pub"
   echo -e "\n\e[31mRegister webhook in your git server.\e[0m"
   echo "Pointing to: <start.domain.tld/git/webhook> with your"
   echo "hook secret (default: webhook-secret) from the caddyfile"

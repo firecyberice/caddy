@@ -32,7 +32,7 @@ function core_reload(){
 
 function core_up(){
   for j in ${CADDY_DIR}/conf/enabled/*; do
-    local sname="$(basename $j)"
+    local sname="$(basename "$j")"
     test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
     docker-compose "${PROJECT}" -f "${SERVICES_DIR}/${sname}/docker-compose.yml" up -d
   done
@@ -40,7 +40,7 @@ function core_up(){
 
 function core_down(){
   for j in ${CADDY_DIR}/conf/enabled/*; do
-    local sname="$(basename $j)"
+    local sname="$(basename "$j")"
     test -f "${SERVICES_DIR}/${sname}/docker-compose.yml" && \
     docker-compose "${PROJECT}" -f "${SERVICES_DIR}/${sname}/docker-compose.yml" down
   done
