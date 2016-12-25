@@ -66,7 +66,7 @@ function core_list(){
 function core_ps(){
   cmd='docker ps --format="table{{.ID}}\t{{.Image}}\t{{.RunningFor}}\t{{.Status}}\t{{.Names}}" -a '
   filterlist="${CADDY_DIR}/conf/enabled/*"
-  eval ${cmd} | head -n 1
+  eval "${cmd}" | head -n 1
   if [[ -z ${PROJECT} ]]; then
     eval "${cmd}" | grep "caddy"
     for item in ${filterlist}; do

@@ -71,8 +71,8 @@ function set_index(){
     else
       newjson=${newjson}","
     fi
-    i=$(basename $j)
-    local link=$(head -n 1 ${CADDY_DIR}/conf/enabled/$i | cut -d' ' -f1)
+    i=$(basename "$j")
+    local link=$(head -n 1 "${CADDY_DIR}/conf/enabled/$i" | cut -d' ' -f1)
     local example="{\"name\": \"$i\",\"link\": \"http://$link\",\"button\": \"btn-primary\",\"image\": \"empty\"}"
     newjson="${newjson}${example}"
   done
@@ -103,7 +103,7 @@ function set_caddyplugins(){
   echo -e "fetch hugo"
   __get_hugo
   echo "create caddyfile"
-  echo -e "${PLUGIN_CADDYFILE}" > ${CADDY_DIR}/conf/plugins
+  echo -e "${PLUGIN_CADDYFILE}" > "${CADDY_DIR}/conf/plugins"
   set -x
   (grep -q "import  /data/conf/plugins" "${CADDY_DIR}/conf/caddyfile" || \
   echo "import  /data/conf/plugins" >> "${CADDY_DIR}/conf/caddyfile")
@@ -144,7 +144,7 @@ function set_variables(){
 
 function set_setup(){
   mkdir -p "${CADDY_DIR}/{conf/available,conf/enabled,conf/zones,logs}" services
-  echo -e "${INST_GITIGNORE}" > ${CADDY_DIR}/.gitignore
+  echo -e "${INST_GITIGNORE}" > "${CADDY_DIR}/.gitignore"
   echo "create caddyfile"
 #  touch ${CADDY_DIR}/conf/enabled/.empty
   echo -e "${INST_CADDYFILE}" > "${CADDY_DIR}/conf/caddyfile"
@@ -174,9 +174,9 @@ function set_configfile(){
 function set_docker(){
   local BASEIMAGE=$(__select_base_image)
   echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}"
-  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build ${CADDY_FEATURES} -t ${CADDY_IMAGENAME} -
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build "${CADDY_FEATURES}" -t "${CADDY_IMAGENAME}" -
 
   echo -e "\nTag image with corresponding caddy version"
-  local caddy_version=$(docker run --rm ${CADDY_IMAGENAME}:latest --version | cut -d' ' -f2)
+  local caddy_version=$(docker run --rm "${CADDY_IMAGENAME}:latest" --version | cut -d' ' -f2)
   docker tag "${CADDY_IMAGENAME}:latest" "${CADDY_IMAGENAME}:${caddy_version}"
 }
