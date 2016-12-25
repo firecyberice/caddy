@@ -10,7 +10,7 @@ dependencies:
 
 test:
   override:
-    - docker run -it -v $(pwd)/lib:/data circleci/shellcheck -c "shellcheck *"
+    - docker run -it -v $(pwd)/dist:/data circleci/shellcheck -c "shellcheck manager"
 
 compile:
   override:
