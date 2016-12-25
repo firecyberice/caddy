@@ -144,7 +144,6 @@ elif [ $# -eq 1 ]; then
   esac
 elif [ $# -eq 2 ]; then
 SERVICE="${2}"
-echo "${SERVICE}" > /dev/null
   case "${1}" in
     "enable" )
       srv_enable

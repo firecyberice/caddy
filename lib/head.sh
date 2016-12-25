@@ -7,7 +7,6 @@
 # 1
 
 VERSION=THISVERSION
-echo "${VERSION}" > /dev/null
 
 if [ -f ./config.sh ]; then
     . ./config.sh
