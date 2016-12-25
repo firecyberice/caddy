@@ -10,11 +10,11 @@ dependencies:
 
 test:
   override:
-    - docker run -it -v $(pwd)/lib:/data circleci/shellcheck shellcheck *
+    - docker run -it -v $(pwd)/lib:/data circleci/shellcheck -c "shellcheck *"
 
 compile:
   override:
-    - docker run -it -v $(pwd):/data circleci/shellcheck ./selfextractor_build.sh
+    - docker run -it -v $(pwd):/data circleci/shellcheck -c "./selfextractor_build.sh"
     - cp -r dist ${CIRCLE_ARTIFACTS}/
 
 

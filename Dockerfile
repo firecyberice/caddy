@@ -1,8 +1,9 @@
 FROM debian:jessie
 
 RUN apt-get update -qq && apt-get install -y \
-    shellcheck
+    shellcheck \
+    tree
 
 WORKDIR /data
 EXPOSE 80
-CMD ["/bin/bash"]
+ENTRYPOINT ["/bin/bash"]
