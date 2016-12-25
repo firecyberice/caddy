@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/firecyberice/caddy.svg?style=svg)](https://circleci.com/gh/firecyberice/caddy)
+
 # Caddy reverse Proxy for Docker (crpd)
 
 ## get general info and help
