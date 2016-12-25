@@ -10,8 +10,9 @@ dependencies:
 
 test:
   override:
-    - docker run -it -v $(pwd)/dist:/data circleci/shellcheck -c "shellcheck -e SC2046 manager"
-    - docker run -it -v $(pwd)/lib:/data circleci/shellcheck -c "shellcheck -e SC2046 -e SC2034 *"
+    - docker run -it -v $(pwd)/dist:/data circleci/shellcheck -c "shellcheck -e 2086 -e SC2046 manager"
+    - docker run -it -v $(pwd)/lib:/data circleci/shellcheck -c "shellcheck -e 2086 -e SC2046 -e SC2034 *"
+    - docker run -it -v $(pwd)/lib:/data circleci/shellcheck -c "shellcheck -e SC2034 *" || true
 
 compile:
   override:

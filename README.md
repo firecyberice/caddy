@@ -53,3 +53,20 @@
 - `./manager index`              Create index page for active Services available at '/caddy.html'.
 - `./manager version`            Display Version.
 - `./manager plugins`            Add examples for caddy plugins like git hugo markdown to startpage.
+
+
+## Build with circleci
+
+#### These tests generate false positives `-->` ignoring them
+
+- SC2046: Quote this to prevent word splitting
+- SC2034: ... appears unused. Verify it or export it
+- SC2086: Double quote to prevent globbing and word splitting
+
+```
+docker build --rm=false -t circleci/shellcheck .
+docker run -it -v $(pwd)/lib:/data circleci/shellcheck -c "shellcheck -e SC2046 -e 2086 -e SC2034 *"
+
+docker run -it -v $(pwd):/data circleci/shellcheck -c "./selfextractor_build.sh"
+docker run -it -v $(pwd)/dist:/data circleci/shellcheck -c "shellcheck -e SC2046 -SC2086 manager"
+```
