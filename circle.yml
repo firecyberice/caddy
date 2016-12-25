@@ -1,0 +1,25 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  override:
+    - docker info
+    - docker version
+    - docker build --rm=false -t circleci/shellcheck .
+
+test:
+  override:
+    - docker run -itd -v $(pwd)/lib:./data circleci/shellcheck shellcheck *
+
+compile:
+  override:
+    - docker run -itd -v $(pwd):./data circleci/shellcheck ./selfextractor_build.sh
+
+
+#deployment:
+#  release:
+#    branch: mew
+#    tag: /v[0-9]+(\.[0-9]+)*/
+#    commands:
+#      - package_cloud push Hypriot/rpi/debian/jessie $CIRCLE_ARTIFACTS/*.deb
