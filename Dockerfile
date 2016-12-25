@@ -5,5 +5,4 @@ RUN apt-get update -qq && apt-get install -y \
 
 WORKDIR /data
 EXPOSE 80
-ENTRYPOINT ["/bin/bash"]
-CMD [""]
+CMD ["/bin/bash"]
