@@ -1,7 +1,9 @@
 #!/bin/bash
 
-ARCHIVEFILE="${1:-selfextracting_caddy-docker_installer.bsx}"
+VERSION=$(cat ../VERSION)
 origin=$(pwd)
+
+ARCHIVEFILE="${1:-crpd_${VERSION}.bsx}"
 
 mkdir -p build_dir/payload
 
@@ -12,7 +14,6 @@ mkdir -p build_dir/payload
 echo "create manager script"
 cd lib/
 cat head.sh core.sh services.sh install.sh new.sh plugins.sh startpage.sh setup.sh manager.sh > ../build_dir/payload/manager
-VERSION=$(cat ../VERSION)
 sed -i -e "s|THISVERSION|\"${VERSION}\"|g" ../build_dir/payload/manager
 chmod +x ../build_dir/payload/manager
 cd ..
@@ -76,6 +77,7 @@ if [ -e "payload.tar" ]; then
         mkdir -p ../dist
         cat decompress payload.tar.gz > ../dist/$ARCHIVEFILE
         chmod +x ../dist/$ARCHIVEFILE
+        cp payload/manager ../dist/
     else
         echo "payload.tar.gz does not exist"
         exit 1
