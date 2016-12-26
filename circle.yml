@@ -23,7 +23,6 @@ compile:
 
 deployment:
   release:
-    branch: new
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: ${CIRCLE_PROJECT_USERNAME}
     commands:
