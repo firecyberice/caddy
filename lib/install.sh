@@ -80,7 +80,7 @@ version: "2"
 networks:
   backend:
     external:
-      name: NETWORK
+      name: CADDYNET
 
 services:
   caddy:

@@ -38,7 +38,7 @@ usage:
 
   ${0} setvars            Set FQDN for all vhosts to ${FQDN}. (e.g.: <domain.tld>)
                               Set email address to ${ACME_MAIL} for tls with letsencrypt.
-                              Replace NETWORK in all docker-compose.yml files with ${NETWORK}.
+                              Replace CADDYNET in all docker-compose.yml files with ${CADDYNET}.
 
   ${0} setup              Create config folders.
 

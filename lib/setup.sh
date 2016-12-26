@@ -95,7 +95,7 @@ function set_newservice(){
   echo "create docker-compose.yml"
   echo -e "${NEW_COMPOSE}" > "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
   sed -i -e "s|SERVICE|${SERVICE}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
-  sed -i -e "s|NETWORK|${NETWORK}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
+  sed -i -e "s|CADDYNET|${CADDYNET}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
   echo "create example Dockerfile"
   echo -e "${NEW_DOCKERFILE}" > "${SERVICES_DIR}/${SERVICE}/docker/Dockerfile"
   echo "Hello ${SERVICE}" > "${SERVICES_DIR}/${SERVICE}/docker/index.html"
@@ -103,8 +103,6 @@ function set_newservice(){
 
 function set_caddyplugins(){
   mkdir -p "${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}"
-  echo -e "fetch hugo"
-  __get_hugo
   echo "create caddyfile"
   echo -e "${PLUGIN_CADDYFILE}" > "${CADDY_DIR}/conf/plugins"
   set -x
@@ -120,6 +118,8 @@ function set_caddyplugins(){
   echo "Pointing to: <start.domain.tld/git/webhook> with your"
   echo "hook secret (default: webhook-secret) from the caddyfile"
   echo -e "\nDefault credentials for caddy basicauth: \e[31madmin:password\e[0m\n"
+
+  set_variables
 }
 
 function set_variables(){
@@ -136,13 +136,20 @@ function set_variables(){
     find "${CADDY_DIR}/conf" -mindepth 1 -maxdepth 1 -type f -exec sed -i -e "s/ACME_MAIL/${ACME_MAIL}/g" {} \;
   fi
 
-  sed -i -e "s|CADDY_IMAGENAME|${CADDY_IMAGENAME}|g" docker-compose.yml
-
-  if [[ -n "${NETWORK}" ]]; then
-    echo "set NETWORK in docker-compose.yml files"
-    find "${SERVICES_DIR}/" -mindepth 1 -maxdepth 2 -type f -name 'docker-compose.yml' -exec sed -i -e "s/NETWORK/${NETWORK}/g" {} \;
-    sed -i -e "s/NETWORK/${NETWORK}/g" docker-compose.yml
+  if [[ -n "${CADDYNET}" ]]; then
+    echo "set CADDYNET in docker-compose.yml files"
+    find "${SERVICES_DIR}/" -mindepth 1 -maxdepth 2 -type f -name 'docker-compose.yml' -exec sed -i -e "s/CADDYNET/${CADDYNET}/g" {} \;
   fi
+}
+
+function set_simple_setup(){
+  echo "create and edit config file"
+  set_configfile
+  editor config.sh
+  echo "create folders and default website"
+  set_setup
+  echo "build caddy Docker image"
+  set_docker
 }
 
 function set_setup(){
@@ -153,9 +160,11 @@ function set_setup(){
   echo -e "${INST_CADDYFILE}" > "${CADDY_DIR}/conf/caddyfile"
   echo "create docker-compose.yml for caddy"
   echo -e "${INST_COMPOSE}" > docker-compose.yml
+  sed -i -e "s|CADDY_IMAGENAME|${CADDY_IMAGENAME}|g" docker-compose.yml
+  sed -i -e "s/CADDYNET/${CADDYNET}/g" docker-compose.yml
   echo "create config.sh for this manager"
 
-  set_configfile
+  set_variables
   __createwebsite
 }
 
@@ -163,12 +172,18 @@ function set_configfile(){
 [[ ! -f config.sh ]] && echo -e "\
 # configfile for caddy manager\n\
 #\n\
+\n\
 #CADDY_DIR=caddy\n\
 #SERVICES_DIR=services\n\
-#PROJECT=demo\n\
-#NETWORK=caddynet\n\
-#ACME_MAIL=noreply@domain.tld\n\
+#PROJECT=demo\n\n\
+\n\
+# Network for services to connect to caddy\n\
+#CADDYNET=CADDYNET\n\
+# Mail address for Let's Encrypt\n\
+#ACME_MAIL=ACME_MAIL\n\
+# Default server hostname for generating subdomains\n\
 #FQDN=domain.tld\n\
+\n\
 #CADDY_FEATURES='DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload'\n\
 #CADDY_IMAGENAME=fciserver/caddy\n"\
 > config.sh

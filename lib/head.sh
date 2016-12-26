@@ -19,6 +19,6 @@ fi
 
 
 [ "${PROJECT:-}" ] && PROJECT="-p $PROJECT"
-: "${NETWORK:=caddy_backend}"
+: "${CADDYNET:=caddy_backend}"
 : "${CADDY_IMAGENAME:=fciserver/caddy}"
 [ "${CADDY_FEATURES:-}" ] && CADDY_FEATURES="--build-arg CURL_FEATURES=${CADDY_FEATURES}"

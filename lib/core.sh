@@ -5,10 +5,10 @@ function core_version(){
 }
 
 function core_start(){
-  docker network create --driver=bridge "${NETWORK}"
+  docker network create --driver=bridge "${CADDYNET}"
 
   echo "create and start frontend proxy"
-  grep "name: ${NETWORK}" docker-compose.yml
+  grep "name: ${CADDYNET}" docker-compose.yml
   docker-compose ${PROJECT} up -d
 }
 
@@ -16,7 +16,7 @@ function core_stop(){
   echo "stop and remove frontend proxy"
   docker-compose ${PROJECT} down --rmi local
 
-  docker network rm "${NETWORK}"
+  docker network rm "${CADDYNET}"
 }
 
 function core_restart(){
