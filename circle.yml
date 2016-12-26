@@ -18,7 +18,7 @@ compile:
   override:
     - docker run -it -v $(pwd):/data circleci/shellcheck -c "./selfextractor_build.sh"
     - cp -r dist ${CIRCLE_ARTIFACTS}/
-    - export VERSION="$(cat VERSION)" && cd ${CIRCLE_ARTIFACTS} && sha256sum * > "crpd_${VERSION}.sha256" && cd -
+    - export VERSION="$(cat VERSION)" && cd ${CIRCLE_ARTIFACTS} && for filename in *; do sha256sum ${filename} > "${filename}.sha256" && cd -
 
 
 deployment:
@@ -28,3 +28,5 @@ deployment:
     commands:
       - echo $CIRCLE_ARTIFACTS
   #    - cd ${CIRCLE_ARTIFACTS}; for filename in *; do github-release upload --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --file ${filename} --name ${filename}; done
+
+  https://github.com/hypriot/os-rootfs/blob/ff79f882730ebd598042114103a6543c5dd1c49b/circle.yml
