@@ -21,4 +21,5 @@ fi
 [ "${PROJECT:-}" ] && PROJECT="-p $PROJECT"
 : "${CADDYNET:=caddy_backend}"
 : "${CADDY_IMAGENAME:=fciserver/caddy}"
-[ "${CADDY_FEATURES:-}" ] && CADDY_FEATURES="--build-arg CURL_FEATURES=${CADDY_FEATURES}"
+[ "${CADDY_FEATURES:-}" ] && CADDY_FEATURES="--build-arg CADDY_FEATURES=${CADDY_FEATURES}"
+[ "${HUGO_VERSION:-}" ] && HUGO_VERSION="--build-arg HUGO_VERSION=${HUGO_VERSION}"

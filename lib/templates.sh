@@ -30,6 +30,7 @@ read -r -d '' INST_CONFIGFILE <<"EOM"
 # Settings for the caddy Docker image
 #CADDY_FEATURES='DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload'
 #CADDY_IMAGENAME=fciserver/caddy
+#HUGO_VERSION=0.18 # only tested with 0.17 and 0.18 because the upstream tar archive names are inconsistent
 
 EOM
 
@@ -39,6 +40,7 @@ ENV OPENSSL_VERSION 1.0.2e-r0
 
 RUN apk add --no-cache \
 bash \
+bind-tools \
 ca-certificates \
 curl \
 drill \
@@ -47,20 +49,20 @@ openssh-client \
 sudo \
 "openssl>=${OPENSSL_VERSION}"
 
-# TODO add bind-tools to generate dnssec-keys
-
 # Install hugo
-ENV URL="https://github.com/spf13/hugo/releases/download/v0.17/hugo_0.17_Linux-64bit.tar.gz"
+ARG HUGO_VERSION
+ENV HUGO_VERSION ${HUGO_VERSION:-0.18}
+ENV URL="https://github.com/spf13/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_Linux-64bit.tar.gz"
 RUN \
 curl -sSLo /tmp/hugo.tgz ${URL} \
-&& tar xzf /tmp/hugo.tgz -C /tmp hugo_0.17_linux_amd64/hugo_0.17_linux_amd64 \
-&& mv /tmp/hugo_0.17_linux_amd64/hugo_0.17_linux_amd64 /usr/local/bin/hugo \
+&& tar xzf /tmp/hugo.tgz -C /tmp hugo_${HUGO_VERSION}_linux_amd64/hugo_${HUGO_VERSION}_linux_amd64 \
+&& mv /tmp/hugo_${HUGO_VERSION}_linux_amd64/hugo_${HUGO_VERSION}_linux_amd64 /usr/local/bin/hugo \
 && rm -rf /tmp/*
 
 # Install caddy
-ARG CURL_FEATURES
-ENV CURL_FEATURES ${CURL_FEATURES:-"DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload"}
-RUN curl -fsSL https://getcaddy.com | bash -s ${CURL_FEATURES}
+ARG CADDY_FEATURES
+ENV CADDY_FEATURES ${CADDY_FEATURES:-"DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload"}
+RUN curl -fsSL https://getcaddy.com | bash -s ${CADDY_FEATURES}
 
 # Fix to use git plugin
 RUN mkdir /root/.ssh \
