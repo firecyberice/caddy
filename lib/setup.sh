@@ -1,4 +1,4 @@
-# 8
+# 5
 
 function __evaluate_result(){
   local returnvalue="${1}"
@@ -35,6 +35,10 @@ function __select_base_image(){
     * ) echo "Your architecture is not supported." ;;
   esac
   echo "${BASEIMAGE}"
+}
+
+function __configfile(){
+  [[ ! -f config.sh ]] && echo -e "${INST_CONFIGFILE}" > config.sh
 }
 
 function __createwebsite(){
@@ -85,21 +89,6 @@ function set_index(){
   echo -e "Index created\nPlease open \e[34m'/caddy.html'\e[39m in your browser."
 }
 
-function set_newservice(){
-  mkdir -p "${SERVICES_DIR}/${SERVICE}/docker/"
-  echo "create caddy vhost"
-  echo -e "${NEW_CADDYFILE}" > "${CADDY_DIR}/conf/available/${SERVICE}"
-  sed -i -e "s|SERVICE|${SERVICE}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
-  sed -i -e "s|domain\.tld|${FQDN}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
-  sed -i -e "s|ACME_MAIL|${ACME_MAIL}|g" "${CADDY_DIR}/conf/available/${SERVICE}"
-  echo "create docker-compose.yml"
-  echo -e "${NEW_COMPOSE}" > "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
-  sed -i -e "s|SERVICE|${SERVICE}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
-  sed -i -e "s|CADDYNET|${CADDYNET}|g" "${SERVICES_DIR}/${SERVICE}/docker-compose.yml"
-  echo "create example Dockerfile"
-  echo -e "${NEW_DOCKERFILE}" > "${SERVICES_DIR}/${SERVICE}/docker/Dockerfile"
-  echo "Hello ${SERVICE}" > "${SERVICES_DIR}/${SERVICE}/docker/index.html"
-}
 
 function set_caddyplugins(){
   mkdir -p "${CADDY_DIR}/htdocs/{files,hugo/public,git/key,git/www}"
@@ -143,9 +132,11 @@ function set_variables(){
 }
 
 function set_simple_setup(){
-  echo "create and edit config file"
-  set_configfile
+  echo "edit config file"
+  __configfile
+  ls -l
   vi config.sh
+  source ./config.sh
   echo "create folders and default website"
   set_setup
   echo "build caddy Docker image"
@@ -165,28 +156,6 @@ function set_setup(){
 
   set_variables
   __createwebsite
-}
-
-function set_configfile(){
-[[ ! -f config.sh ]] && echo -e "#\n\
-# configfile for caddy manager\n\
-#\n\
-\n\
-#CADDY_DIR=caddy\n\
-#SERVICES_DIR=services\n\
-#PROJECT=demo\n\
-\n\
-# Network for services to connect to caddy\n\
-#CADDYNET=CADDYNET\n\
-# Mail address for Let's Encrypt\n\
-#ACME_MAIL=ACME_MAIL\n\
-# Default server hostname for generating subdomains\n\
-#FQDN=domain.tld\n\
-\n\
-# Settings for the caddy Docker image \n\
-#CADDY_FEATURES='DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload'\n\
-#CADDY_IMAGENAME=fciserver/caddy\n"\
-> config.sh
 }
 
 function set_docker(){
