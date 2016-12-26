@@ -27,4 +27,5 @@ deployment:
     tag: /v[0-9]+(\.[0-9]+)*/
     owner: ${CIRCLE_PROJECT_USERNAME}
     commands:
-      - cd ${CIRCLE_ARTIFACTS}; for filename in *; do github-release upload --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --file ${filename} --name ${filename}; done
+      - echo $CIRCLE_ARTIFACTS
+  #    - cd ${CIRCLE_ARTIFACTS}; for filename in *; do github-release upload --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --file ${filename} --name ${filename}; done
