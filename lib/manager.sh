@@ -1,16 +1,13 @@
-# 9
+# 6
 
 function usage () {
 cat << EOM
 usage:
 
+CADDY:
   ${0} start              Start the Caddy server.
 
   ${0} stop               Stop the Caddy server.
-
-  ${0} up                 Create and start all service container
-
-  ${0} down               Stop and remove all service container
 
   ${0} restart            Restart the Caddy server. (recreate caddy container)
 
@@ -20,20 +17,36 @@ usage:
 
   ${0} ps                 Get status of all connected Container.
 
-  ${0} cleanup            Remove all dangling Docker resources.
-
   ${0} caddylog           Log from the Caddy server.
 
-  ${0} new <service>      Create new service template. (caddy conf and docker-compose.yml)
+  ${0} cleanup            Remove all dangling Docker resources.
 
-  ${0} prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
+  ${0} up                 Create and start all service container
 
+  ${0} down               Stop and remove all service container
+
+
+SERVICES:
   ${0} enable  <service>  Enable a service. (add settings to caddy; run docker-compose up)
 
   ${0} disable <service>  Disable a service. (remove settings from caddy; run docker-compose down)
 
   ${0} logs <service>     Logs of a service. (run docker-compose logs -f)
 
+  ${0} new <service>      Create new service template. (caddy conf and docker-compose.yml)
+
+  ${0} check <service>    Check the docker-compose.yml file for syntax errors.
+
+  ${0} prepare <service>  Build / Pull Docker Image(s) of a service. (run docker-compose build and docker-compose pull)
+
+  ${0} pack <service>     Create a service bundle. (contains caddy conf, docker-compose.yml, <service>/docker/ folder)
+
+  ${0} uninstall <service> Delete service (caddy conf, docker-compose.yml, <service>/docker/ folder)
+
+  ${0} install <service>  Install service bundle.
+
+
+MISC:
   ${0} index              Create index page for active Services available at '/caddy.html'.
 
   ${0} setvars            Set FQDN for all vhosts to ${FQDN}. (e.g.: <domain.tld>)
@@ -42,9 +55,9 @@ usage:
 
   ${0} setup              Create config folders.
 
-  ${0} config             Create example config file for this tool.
-
   ${0} build              Build caddy Docker image.
+
+  ${0} quickstart         Contains setup build and setvars.
 
   ${0} version            Display Version.
 
@@ -53,28 +66,11 @@ usage:
 EOM
 }
 
-function here_install(){
-    core_version
-    set_docker
-    if [[ ! -f config.sh ]]; then
-      set_setup
-      set_caddyplugins
-      set_configfile
-      echo -e "Please configure config.sh and execute <$0 setvars> to complete setup."
-      echo -e "Afterwards you can start the frontend with <$0 start>."
-    else
-      set_setup
-      set_caddyplugins
-      set_variables
-      core_start
-      __test_requirements jq
-      set_index
-      core_list
-    fi
-}
-
 echo "Check requirements without exiting"
 __check_if_program_exists jq
+
+# create config.sh if not exists
+[[ ! -f config.sh ]] && __configfile
 
 if [[ ${DEBUG} == "true" ]]; then
   echo "$@"
@@ -132,11 +128,8 @@ elif [ $# -eq 1 ]; then
     "plugins" )
       set_caddyplugins
       ;;
-    "install" )
-      here_install
-      ;;
-    "config" )
-      set_configfile
+    "quickstart" )
+      set_simple_setup
       ;;
     * )
       usage
@@ -151,14 +144,26 @@ SERVICE="${2}"
     "disable" )
       srv_disable
       ;;
+    "logs" )
+      srv_log
+      ;;
+    "new" )
+      srv_new
+      ;;
+    "check" )
+      srv_check
+      ;;
     "prepare" )
       srv_prepare
       ;;
-    "new" )
-      set_newservice
+    "pack" )
+      srv_pack
       ;;
-    "logs" )
-      srv_log
+    "uninstall" )
+      srv_uninstall
+      ;;
+    "install" )
+      srv_install
       ;;
     * )
       usage
