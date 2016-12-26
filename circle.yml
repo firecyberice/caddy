@@ -17,8 +17,7 @@ test:
 compile:
   override:
     - docker run -it -v $(pwd):/data circleci/shellcheck -c "./selfextractor_build.sh"
-  artifacts:
-    - "dist/"
+    - cp -r dist ${CIRCLE_ARTIFACTS}/
 
 
 #deployment:
