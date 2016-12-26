@@ -18,11 +18,12 @@ compile:
   override:
     - docker run -it -v $(pwd):/data circleci/shellcheck -c "./selfextractor_build.sh"
     - cp -r dist ${CIRCLE_ARTIFACTS}/
+    - export VERSION="$(cat VERSION)" && cd ${CIRCLE_ARTIFACTS} && sha256sum * > "crpd_${VERSION}.sha256" && cd -
 
 
-#deployment:
-#  release:
-#    branch: mew
-#    tag: /v[0-9]+(\.[0-9]+)*/
-#    commands:
-#      - package_cloud push Hypriot/rpi/debian/jessie $CIRCLE_ARTIFACTS/*.deb
+deployment:
+  release:
+    branch: new
+    tag: /v[0-9]+(\.[0-9]+)*/
+    commands:
+      - cd ${CIRCLE_ARTIFACTS}; for filename in *; do github-release upload --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --file ${filename} --name ${filename}; done
