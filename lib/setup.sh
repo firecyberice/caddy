@@ -145,7 +145,7 @@ function set_variables(){
 function set_simple_setup(){
   echo "create and edit config file"
   set_configfile
-  editor config.sh
+  vi config.sh
   echo "create folders and default website"
   set_setup
   echo "build caddy Docker image"
@@ -153,7 +153,7 @@ function set_simple_setup(){
 }
 
 function set_setup(){
-  mkdir -p "${CADDY_DIR}/{conf/available,conf/enabled,conf/zones,logs}" services
+  mkdir -p ${CADDY_DIR}/{conf/available,conf/enabled,conf/zones,logs} "${SERVICES_DIR}"
   echo -e "${INST_GITIGNORE}" > "${CADDY_DIR}/.gitignore"
   echo "create caddyfile"
 #  touch ${CADDY_DIR}/conf/enabled/.empty
@@ -162,20 +162,19 @@ function set_setup(){
   echo -e "${INST_COMPOSE}" > docker-compose.yml
   sed -i -e "s|CADDY_IMAGENAME|${CADDY_IMAGENAME}|g" docker-compose.yml
   sed -i -e "s/CADDYNET/${CADDYNET}/g" docker-compose.yml
-  echo "create config.sh for this manager"
 
   set_variables
   __createwebsite
 }
 
 function set_configfile(){
-[[ ! -f config.sh ]] && echo -e "\
+[[ ! -f config.sh ]] && echo -e "#\n\
 # configfile for caddy manager\n\
 #\n\
 \n\
 #CADDY_DIR=caddy\n\
 #SERVICES_DIR=services\n\
-#PROJECT=demo\n\n\
+#PROJECT=demo\n\
 \n\
 # Network for services to connect to caddy\n\
 #CADDYNET=CADDYNET\n\
@@ -184,6 +183,7 @@ function set_configfile(){
 # Default server hostname for generating subdomains\n\
 #FQDN=domain.tld\n\
 \n\
+# Settings for the caddy Docker image \n\
 #CADDY_FEATURES='DNS,cors,filemanager,git,hugo,ipfilter,jwt,locale,minify,ratelimit,realip,upload'\n\
 #CADDY_IMAGENAME=fciserver/caddy\n"\
 > config.sh
@@ -191,8 +191,8 @@ function set_configfile(){
 
 function set_docker(){
   local BASEIMAGE=$(__select_base_image)
-  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}"
-  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build "${CADDY_FEATURES}" -t "${CADDY_IMAGENAME}" -
+#  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}"
+  echo -e "FROM ${BASEIMAGE}\n\n${INST_DOCKERFILE}" | docker build ${CADDY_FEATURES} -t "${CADDY_IMAGENAME}" -
 
   echo -e "\nTag image with corresponding caddy version"
   local caddy_version=$(docker run --rm "${CADDY_IMAGENAME}:latest" --version | cut -d' ' -f2)
