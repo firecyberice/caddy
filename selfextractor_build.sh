@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=$(cat ../VERSION)
+VERSION=$(cat VERSION)
 origin=$(pwd)
 
 ARCHIVEFILE="${1:-crpd_${VERSION}.bsx}"

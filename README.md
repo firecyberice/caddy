@@ -16,6 +16,7 @@
 ./manager setvars
 ./manager build
 ```
+
 - `./manager config`             Create example config file for this tool.
 - `./manager setup`              Create config folders.
 - `./manager setvars`            Set FQDN for all vhosts to ${FQDN}. (e.g.: <domain.tld>)
