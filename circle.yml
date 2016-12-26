@@ -18,7 +18,7 @@ compile:
   override:
     - docker run -it -v $(pwd):/data circleci/shellcheck -c "./selfextractor_build.sh"
     - cp -r dist ${CIRCLE_ARTIFACTS}/
-    - export VERSION="$(cat VERSION)" && cd ${CIRCLE_ARTIFACTS} && for filename in *; do sha256sum ${filename} > "${filename}.sha256" && cd -
+    - export VERSION="$(cat VERSION)" && cd ${CIRCLE_ARTIFACTS} && for filename in *; do sha256sum ${filename} > "${filename}.sha256"; done && cd -
 
 
 deployment:
