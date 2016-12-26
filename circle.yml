@@ -28,6 +28,3 @@ deployment:
     owner: ${CIRCLE_PROJECT_USERNAME}
     commands:
       - cd ${CIRCLE_ARTIFACTS}; for filename in *; do github-release upload --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --file ${filename} --name ${filename}; done
-
-
-  https://github.com/hypriot/os-rootfs/blob/ff79f882730ebd598042114103a6543c5dd1c49b/circle.yml
