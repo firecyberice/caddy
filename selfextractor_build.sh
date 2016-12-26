@@ -5,21 +5,17 @@ origin=$(pwd)
 
 ARCHIVEFILE="${1:-crpd_${VERSION}.bsx}"
 
-mkdir -p build_dir/payload
-
-# echo "add payload"
-# cp -r www build_dir/payload/
-
+TEMP_DIR=$(mktemp -d /tmp/crpdcompile.XXXXXX)
+mkdir -p "${TEMP_DIR}/payload"
 
 echo "create manager script"
-cd lib/
-cat head.sh core.sh services.sh install.sh new.sh plugins.sh startpage.sh setup.sh manager.sh > ../build_dir/payload/manager
-sed -i -e "s|THISVERSION|\"${VERSION}\"|g" ../build_dir/payload/manager
-chmod +x ../build_dir/payload/manager
-cd ..
+cd lib/ || exit
+cat head.sh core.sh services.sh templates.sh setup.sh manager.sh > "${TEMP_DIR}/payload/manager"
+sed -i -e "s|THISVERSION|\"${VERSION}\"|g" "${TEMP_DIR}/payload/manager"
+chmod +x "${TEMP_DIR}/payload/manager"
 
 echo "prepare selfextractor"
-cd build_dir/
+cd "${TEMP_DIR}" || exit
 echo "Step 1/2 installer"
 cat << EOM > payload/installer
 #!/bin/bash
@@ -66,7 +62,7 @@ chmod +x decompress
 
 echo "create selfextract"
 
-cd payload
+cd payload || exit
 tar cf ../payload.tar ./*
 cd ..
 
@@ -74,10 +70,10 @@ if [ -e "payload.tar" ]; then
     gzip payload.tar
 
     if [ -e "payload.tar.gz" ]; then
-        mkdir -p ../dist
-        cat decompress payload.tar.gz > ../dist/$ARCHIVEFILE
-        chmod +x ../dist/$ARCHIVEFILE
-        cp payload/manager ../dist/
+        mkdir -p "${origin}/dist"
+        cat decompress payload.tar.gz > "${origin}/dist/${ARCHIVEFILE}"
+        chmod +x "${origin}/dist/${ARCHIVEFILE}"
+        cp payload/manager "${origin}/dist/"
     else
         echo "payload.tar.gz does not exist"
         exit 1
@@ -87,11 +83,11 @@ else
     exit 1
 fi
 
-echo "$ARCHIVEFILE created"
-cd $origin
+echo "${ARCHIVEFILE} created"
+cd "${origin}" || exit
 echo -e "\ncleanup"
 set -x
-tree -L 2 build_dir/
-rm -rf build_dir
+tree -L 2 "${TEMP_DIR}"
+rm -rf "${TEMP_DIR}"
 set +x
 exit 0
