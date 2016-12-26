@@ -9,7 +9,7 @@
 VERSION=THISVERSION
 
 if [ -f ./config.sh ]; then
-    . ./config.sh
+  source ./config.sh
 fi
 
 : "${CADDY_DIR:=caddy}"
