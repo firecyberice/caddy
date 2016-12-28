@@ -8,9 +8,9 @@ dependencies:
     - docker version
     - docker build --rm=false -t circleci/shellcheck .
     - curl -sSL https://github.com/aktau/github-release/releases/download/v0.6.2/linux-amd64-github-release.tar.bz2 > gh-release.tar.bz2
-    - ls -lh
-    - tar --strip-components 3 -C /usr/local/bin/ -xf gh-release.tar.bz2 bin/linux/amd64/github-release
-    - github-release --help
+    - ls -lh && pwd
+    - tar --strip-components 3 -xf gh-release.tar.bz2 bin/linux/amd64/github-release
+    - ls -la && ./github-release --help
 
 test:
   override:
