@@ -8,9 +8,7 @@ dependencies:
     - docker version
     - docker build --rm=false -t circleci/shellcheck .
     - curl -sSL https://github.com/aktau/github-release/releases/download/v0.6.2/linux-amd64-github-release.tar.bz2 > gh-release.tar.bz2
-    - ls -lh && pwd
-    - tar --strip-components 3 -xf gh-release.tar.bz2 bin/linux/amd64/github-release
-    - ls -la && ./github-release --help
+    - tar --strip-components 3 -C /home/ubuntu/bin -xf gh-release.tar.bz2 bin/linux/amd64/github-release
 
 test:
   override:
@@ -28,6 +26,5 @@ deployment:
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
     commands:
-      - apt-get update && apt-get install -y curl bzip2
       - github-release release --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --pre-release
       - cd ${CIRCLE_ARTIFACTS}/dist; for filename in *; do github-release upload --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --file ${filename} --name ${filename}; done
