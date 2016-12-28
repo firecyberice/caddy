@@ -19,11 +19,17 @@ compile:
     - docker run -it -v $(pwd):/data circleci/shellcheck -c "./selfextractor_build.sh"
     - cp -r dist ${CIRCLE_ARTIFACTS}/
     - export VERSION="$(cat VERSION)" && cd "${CIRCLE_ARTIFACTS}/dist" && for filename in *; do sha256sum ${filename} > "${filename}.sha256"; done && cd -
+    - apt-get update && apt-get install -y curl bzip2
+    - curl -sSL https://github.com/aktau/github-release/releases/download/v0.6.2/linux-amd64-github-release.tar.bz2 > gh-release.tar.bz2
+    - ls -lh
+    - tar --strip-components 3 -C /usr/local/bin/ xf gh-release.tar.bz2 bin/linux/amd64/github-release
+    - github-release --help
 
 
 deployment:
   release:
     tag: /v[0-9]+(\.[0-9]+)*/
     commands:
+      - apt-get update && apt-get install -y curl bzip2
       - github-release release --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --pre-release
       - cd ${CIRCLE_ARTIFACTS}/dist; for filename in *; do github-release upload --user "${CIRCLE_PROJECT_USERNAME}" --repo "${CIRCLE_PROJECT_REPONAME}" --tag $CIRCLE_TAG --file ${filename} --name ${filename}; done
